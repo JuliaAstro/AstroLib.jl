@@ -81,7 +81,7 @@ julia> AstroLib.planets["mars"].eqradius
 3.3962e6
 
 julia> AstroLib.planets["saturn"].mass
-5.6834e25
+5.6834e26
 ```
 
 ## Functions organized by category
