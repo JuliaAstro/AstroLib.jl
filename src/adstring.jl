@@ -94,8 +94,7 @@ function adstring(ra::T, dec::T; precision::Int=0,
                              Int(ra_min), ra_sec_string)
     end
     dec_sec_string = formatsec(dec_sec, precision, truncate)
-    dec_string = @sprintf("%+03.2d %02d %s", Int(dec_deg),
-                          Int(dec_min), dec_sec_string)
+    dec_string = (dec >= 0 ? "+" : "-") * @sprintf("%02.2d %02d %s", Int(abs(dec_deg)), Int(dec_min), dec_sec_string)
     return string(ra_string, dec_string)
 end
 
