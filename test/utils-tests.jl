@@ -5,6 +5,7 @@
     @test @inferred(adstring((30.4, -1.23), truncate=true)) ==
         @inferred(adstring([30.4, -1.23], truncate=true)) ==
         " 02 01 35.9  -01 13 48"
+    @test @inferred(adstring(15, -.5)) == " 01 00 00.0  -00 30 00"
     @test @inferred(adstring(19.19321, truncate=true)) == "+19 11 35.5"
     @test @inferred(adstring(ten(36,24,15.015), -ten(8,24,36.0428), precision=3)) ==
         " 02 25 37.0010  -08 24 36.043"
