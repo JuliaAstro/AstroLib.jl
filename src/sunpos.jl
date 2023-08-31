@@ -134,7 +134,6 @@ The returned `ra` and `dec` are in the given date's equinox.
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-
 function sunpos(jd::AbstractVector{J}; radians::Bool=false) where {J<:Real}
     typej = float(J)
     ra = similar(jd, typej)
