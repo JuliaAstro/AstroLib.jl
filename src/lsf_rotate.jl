@@ -7,7 +7,7 @@ function lsf_rotate(Δ::T, vsini::T, ɛ::T) where {T<:AbstractFloat}
     e1 = 2*(1 - ɛ)
     e2 = pi*ɛ/2
     e3 = pi*(1 - ɛ/3)
-    x1 = abs.(1 .- (vel ./ vsini) .^ 2)
+    x1 = abs.(T(1) .- (vel ./ vsini) .^ T(2)) # Use T(...) to work around https://github.com/JuliaLang/julia/issues/51129
     return vel, (e1 .* sqrt.(x1) .+ e2 .* x1) ./ e3
 end
 
