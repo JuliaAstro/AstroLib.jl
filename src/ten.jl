@@ -10,16 +10,23 @@ ten(d::Real, m::Real=0, s::Real=0) =
 
 # TODO: improve performance, if possible.  There are a couple of slow tests to
 # make parsing of the string work.
-function ten(strng::AbstractString)
-    # Convert strings into numbers, empty strings into 0s.
-    # Replace in the string multiple spaces or colons with a single space, strip leading
-    # whitespaces, and split the resulting string using the space as separator.
-    tmp = map(x-> x=="" ? 0.0 : parse(Float64, x),
-              split(lstrip(replace(strng, r"(\:| )+" => s" ")), " "))
-    # Concatenate "tmp" with 3 zeros, so that "angle" has at least 3 elements
-    # also with an empty string in input.
-    angle = vcat(tmp, zeros(Float64, 3))::Vector{Float64}
-    ten(angle[1], angle[2], angle[3])
+function ten(coordinate::AbstractString)
+    lowercase(coordinate) == "missing" && return missing
+    coord_strip = replace(uppercase(coordinate), r"[NSEW]" => "")
+    split_coord = parse.(Float32, split(coord_strip, r"\s|:"))
+    split_coord[2] /=60.0
+    if length(split_coord) == 3
+        split_coord[3] /=3600.0
+    end
+    conv = sum(abs.(split_coord))
+    # N + E are positive | S + W are negative
+    if split_coord[1] < 0 || occursin(r"[SW]", uppercase(coordinate))
+        # negative
+        return conv * -1
+    else
+        # positive
+        return conv
+    end
 end
 
 ten(itr) = ten(itr...)
@@ -44,6 +51,12 @@ The string should have the form `"deg:min:sec"` or `"deg min sec"`.  Also any
 iterable like `(deg, min, sec)` or `[deg, min, sec]` is accepted as argument.
 
 If minutes and seconds are not specified they default to zero.
+
+### Formatting requirements
+- Coordinates as a `String` separated by spaces (`"11 43 41"`) or colons (`"11:43:41"`)
+- Must use negative sign (`"-11 43.52"`) or single-letter cardinal direction (`"11 43.52W"`)
+- Missing data should be coded as the string `"missing"` (can be accomplished with `replace!()`)
+- Can mix colons and spaces (although it's bad practice
 
 ### Output ###
 
