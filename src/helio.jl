@@ -13,7 +13,7 @@ const dpd = @SMatrix [ 0.00000037  0.00001906 -0.00594749 -0.12534081  0.1604768
                       -0.00031596  0.00005170  0.00004818 -0.01183482 -0.04062942    145.20780515]
 
 const record = Dict(1=>"mercury", 2=>"venus", 3=>"earth", 4=>"mars", 5=>"jupiter",
-                  6=>"saturn", 7=>"uranus", 8=>"neptune", 9=>"pluto")
+                    6=>"saturn", 7=>"uranus", 8=>"neptune", 9=>"pluto")
 
 function _helio(jd::T, num::Integer, radians::Bool) where {T<:AbstractFloat}
 
@@ -63,8 +63,8 @@ for Saturn.
 * `jd`: julian date, scalar or vector
 * `num`: integer denoting planet number, scalar or vector
   1 = Mercury, 2 = Venus, ... 9 = Pluto
-* `radians`(optional): if this keyword is set to
-  `true`, than the longitude and latitude output are in radians rather than degrees.
+* `radians`(optional): if this keyword is set to `true`, then
+  the longitude and latitude output are in radians rather than degrees.
 
 ### Output ###
 
@@ -74,32 +74,32 @@ for Saturn.
 
 ### Example ###
 
-(1) Find heliocentric position of Venus on August 23, 2000
+- Find heliocentric position of Venus on August 23, 2000
 
-```jldoctest
-julia> using AstroLib
+  ```jldoctest
+  julia> using AstroLib
 
-julia> helio(jdcnv(2000,08,23,0), 2)
-(0.7213758288364316, 198.39093251916148, 2.887355631705488)
-```
+  julia> helio(jdcnv(2000,08,23,0), 2)
+  (0.7213758288364316, 198.39093251916148, 2.887355631705488)
+  ```
 
-(2) Find the current heliocentric positions of all the planets
+- Find the current heliocentric positions of all the planets
 
-```jldoctest
-julia> using AstroLib
+  ```jldoctest
+  julia> using AstroLib
 
-julia> helio.([jdcnv(1900)], 1:9)
-9-element Array{Tuple{Float64,Float64,Float64},1}:
- (0.4207394142180803, 202.60972662618906, 3.0503005607270532)
- (0.7274605731764012, 344.5381482401048, -3.3924346961624785)
- (0.9832446886519147, 101.54969268801035, 0.012669354526696368)
- (1.4212659241051142, 287.8531100442217, -1.5754626002228043)
- (5.386813769590955, 235.91306092135062, 0.9131692817310215)
- (10.054339927304339, 268.04069870870387, 1.0851704598594278)
- (18.984683376211326, 250.0555468087738, 0.05297087029604253)
- (29.87722677219009, 87.07244903504716, -1.245060583142733)
- (46.9647515992327, 75.94692594417324, -9.576681044165511)
-```
+  julia> helio.([jdcnv(1900)], 1:9)
+  9-element Vector{Tuple{Float64, Float64, Float64}}:
+   (0.4207394142180803, 202.60972662618906, 3.0503005607270532)
+   (0.7274605731764012, 344.5381482401048, -3.3924346961624785)
+   (0.9832446886519147, 101.54969268801035, 0.012669354526696368)
+   (1.4212659241051142, 287.8531100442217, -1.5754626002228043)
+   (5.386813769590955, 235.91306092135062, 0.9131692817310215)
+   (10.054339927304339, 268.04069870870387, 1.0851704598594278)
+   (18.984683376211326, 250.0555468087738, 0.05297087029604253)
+   (29.87722677219009, 87.07244903504716, -1.245060583142733)
+   (46.9647515992327, 75.94692594417324, -9.576681044165511)
+  ```
 ### Notes ###
 
 This program is based on the two-body model and thus neglects
@@ -122,8 +122,7 @@ function helio(jd::AbstractVector{P}, num::AbstractVector{<:Real},
     hlong_out = similar(jd,  typejd)
     hlat_out = similar(jd,  typejd)
     for i in eachindex(jd)
-        hrad_out[i], hlong_out[i], hlat_out[i] =
-        helio(jd[i], num[i], radians)
+        hrad_out[i], hlong_out[i], hlat_out[i] = helio(jd[i], num[i], radians)
     end
     return hrad_out, hlong_out, hlat_out
 end

@@ -84,8 +84,7 @@ function geo2eci(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
     y = similar(lat, typela)
     z = similar(lat, typela)
     for i in eachindex(lat)
-        x[i], y[i], z[i] =
-            geo2eci(lat[i], long[i], alt[i], jd[i])
+        x[i], y[i], z[i] = geo2eci(lat[i], long[i], alt[i], jd[i])
     end
     return x, y, z
 end

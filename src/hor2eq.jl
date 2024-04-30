@@ -54,13 +54,16 @@ hor2eq(alt::Real, az::Real, jd::Real, obsname::AbstractString; kwargs...) =
 
 
 """
-    hor2eq(alt, az, jd[, obsname; ws=false, B1950=false, precession=true, nutate=true,
-           aberration=true, refract=true, lat=NaN, lon=NaN, altitude=0, pressure=NaN,
-           temperature=NaN]) -> ra, dec, ha
+    hor2eq(alt, az, jd[, obsname;
+           ws=false, B1950=false, precession=true, nutate=true,
+           aberration=true, refract=true,
+           lat=NaN, lon=NaN, altitude=0,
+           pressure=NaN, temperature=NaN]) -> ra, dec, ha
 
-    hor2eq(alt, az, jd, lat, lon[, altitude=0; ws=false, B1950=false,
-           precession=true, nutate=true, aberration=true, refract=true, pressure=NaN,
-           temperature=NaN]) -> ra, dec, ha
+    hor2eq(alt, az, jd, lat, lon[, altitude=0;
+           ws=false, B1950=false, precession=true, nutate=true,
+           aberration=true, refract=true,
+           pressure=NaN, temperature=NaN]) -> ra, dec, ha
 
 
 ### Purpose
@@ -135,7 +138,7 @@ julia> using AstroLib
 
 julia> ra_o, dec_o = hor2eq(ten(37,54,41), ten(264,55,06), 2466879.7083333,
                             "kpno", pressure = 781, temperature = 273)
-(3.3224480269254717, 15.19061543702944, 54.61174536229464)
+(3.3224480269254713, 15.19061543702944, 54.61174536229464)
 
 julia> adstring(ra_o, dec_o)
 " 00 13 17.4  +15 11 26"
@@ -145,7 +148,7 @@ julia> adstring(ra_o, dec_o)
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-hor2eq
+function hor2eq end
 
 # TODO: Make hor2eq type-stable, which it isn't currently because of keyword arguments
 # Note that the inner function `_hor2eq` is type stable

@@ -35,4 +35,4 @@ julia> daycnv(2440000)
 
 `jdcnv` is the inverse of this function.
 """
-const daycnv=Dates.julian2datetime
+const daycnv = Dates.julian2datetime

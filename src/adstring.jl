@@ -72,7 +72,7 @@ julia> adstring(30.4, -1.23, truncate=true)
 " 02 01 35.9  -01 13 48"
 
 julia> adstring.([30.4, -15.63], [-1.23, 48.41], precision=1)
-2-element Array{String,1}:
+2-element Vector{String}:
  " 02 01 36.00  -01 13 48.0"
  " 22 57 28.80  +48 24 36.0"
 ```

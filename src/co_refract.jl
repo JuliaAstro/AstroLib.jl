@@ -150,7 +150,7 @@ Code of this function is based on IDL Astronomy User's Library.
 function co_refract_forward(alt::Real, pre::Real, temp::Real)
 
     if alt < 15
-        ref =3.569*@evalpoly(alt, 0.1594, 0.0196, 0.00002)/@evalpoly(alt, 1, 0.505, 0.0845)
+        ref = 3.569*@evalpoly(alt, 0.1594, 0.0196, 0.00002)/@evalpoly(alt, 1, 0.505, 0.0845)
     else
         ref = 0.0166667 / tand((alt + 7.31 / (alt + 4.4)))
     end

@@ -30,7 +30,7 @@ year).
 julia> using AstroLib, Dates
 
 julia> ymd2dn.([Date(2015, 3, 5), Date(2016, 3, 5)])
-2-element Array{Int64,1}:
+2-element Vector{Int64}:
  64
  65
 ```

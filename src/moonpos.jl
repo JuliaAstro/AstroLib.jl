@@ -175,32 +175,34 @@ difference in the position calculation.
 
 ### Example ###
 
-(1) Find the position of the moon on April 12, 1992
+- Find the position of the moon on April 12, 1992
 
-```jldoctest
-julia> using AstroLib
+  ```jldoctest
+  julia> using AstroLib
 
-julia> jd = jdcnv(1992, 4, 12);
+  julia> jd = jdcnv(1992, 4, 12);
 
-julia> adstring(moonpos(jd)[1:2],precision=1)
-" 08 58 45.23  +13 46 06.1"
-```
+  julia> adstring(moonpos(jd)[1:2],precision=1)
+  " 08 58 45.23  +13 46 06.1"
+  ```
 
-This is within 1" from the position given in the Astronomical Almanac.
+  This is within 1" from the position given in the Astronomical Almanac.
 
-(2) Plot the Earth-moon distance during 2016 with sampling of 6 hours.  Use
-[PyPlot.jl](https://github.com/JuliaPlots/Plots.jl/) for plotting
+- Plot the Earth-moon distance during 2016 with sampling of 6 hours.  Use
+  [PyPlot.jl](https://github.com/JuliaPlots/Plots.jl/) for plotting
 
-```julia
-using PyPlot
-points = DateTime(2016):Dates.Hour(6):DateTime(2017);
-plot(points, moonpos(jdcnv.(points))[3])
-```
+  ```julia
+  using PyPlot
+  points = DateTime(2016):Dates.Hour(6):DateTime(2017);
+  plot(points, moonpos(jdcnv.(points))[3])
+  ```
 
 ### Notes ###
 
 Code of this function is based on IDL Astronomy User's Library.
 """
+function moonpos end
+
 moonpos(jd::Real; radians::Bool=false) = _moonpos(float(jd), radians)
 
 function moonpos(jd::AbstractArray{J}; radians::Bool=false) where {J<:Real}

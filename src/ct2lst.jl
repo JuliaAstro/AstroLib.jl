@@ -22,9 +22,9 @@ Convert from Local Civil Time to Local Mean Sidereal Time.
 The function can be called in two different ways.  The only argument common to
 both methods is `longitude`:
 
-* `longitude`: the longitude in degrees (east of Greenwich) of the place for which the local
-  sidereal time is desired.  The Greenwich mean sidereal time (GMST) can be found by setting
-  longitude = `0`.
+* `longitude`: the longitude in degrees (east of Greenwich) of the place for which
+  the local sidereal time is desired.  The Greenwich mean sidereal time (GMST) can
+  be found by setting longitude = `0`.
 
 The civil date to be converted to mean sidereal time can be specified either by
 providing the Julian days:
@@ -62,7 +62,7 @@ julia> lst = ct2lst(-76.72, -4, DateTime(2008, 7, 30, 15, 53))
 11.356505172312609
 
 julia> sixty(lst)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArraysCore.SVector{3, Float64} with indices SOneTo(3):
  11.0
  21.0
  23.418620325392112
@@ -76,17 +76,18 @@ Julian days.
 ```jldoctest
 julia> using AstroLib, Dates
 
-julia> longitude=ten(8, 43); # Convert longitude to decimals.
+julia> longitude = ten(8, 43); # Convert longitude to decimals.
+
+julia> # Get number of Julian days. Remember to subtract the time zone in
+       # order to convert local time to UTC.
 
 julia> jd = jdcnv(DateTime(2015, 11, 24, 13, 21) - Dates.Hour(1));
-# Get number of Julian days. Remember to subtract the time zone in
-# order to convert local time to UTC.
 
 julia> lst = ct2lst(longitude, jd) # Calculate Greenwich Mean Sidereal Time.
 17.140685171005316
 
 julia> sixty(lst)
-3-element StaticArrays.SArray{Tuple{3},Float64,1,3} with indices SOneTo(3):
+3-element StaticArraysCore.SVector{3, Float64} with indices SOneTo(3):
  17.0
   8.0
  26.466615619137883
@@ -96,6 +97,8 @@ julia> sixty(lst)
 
 Code of this function is based on IDL Astronomy User's Library.
 """
+function ct2lst end
+
 ct2lst(long::Real, jd::Real) = ct2lst(promote(float(long), float(jd))...)
 
 function ct2lst(long::T, tz::T, date::DateTime) where {T<:AbstractFloat}

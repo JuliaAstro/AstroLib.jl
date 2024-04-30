@@ -104,7 +104,7 @@ function euler(ai::AbstractVector{R}, bi::AbstractVector{<:Real}, select::Intege
     bi_out = similar(bi, typeai)
     for i in eachindex(ai)
         ai_out[i], bi_out[i] = euler(ai[i], bi[i], select,
-                                        FK4=FK4, radians=radians)
+                                     FK4=FK4, radians=radians)
     end
     return ai_out, bi_out
 end

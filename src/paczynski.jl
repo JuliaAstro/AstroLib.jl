@@ -70,7 +70,7 @@ Calculate the microlensing amplification for \$u = 10^{-10}\$, \$10^{-1}\$,
 julia> using AstroLib
 
 julia> paczynski.([1e-10, 1e-1, 1, 10, 1e10])
-5-element Array{Float64,1}:
+5-element Vector{Float64}:
   1.0e10
  10.037461005722337
   1.3416407864998738

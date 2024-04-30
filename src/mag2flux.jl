@@ -24,10 +24,10 @@ This is the reverse of `flux2mag`.
 
 * `mag`: the magnitude to be converted in flux.
 * `zero_point`: the zero point level of the magnitude.  If not supplied then defaults to
- 21.1 (Code et al 1976).  Ignored if the `ABwave` keyword is supplied
+  21.1 (Code et al 1976).  Ignored if the `ABwave` keyword is supplied
 * `ABwave` (optional numeric keyword): wavelength, in Angstroms.  If supplied, then the
- input `mag` is assumed to contain Oke AB magnitudes (Oke & Gunn 1983, ApJ, 266, 713;
- http://adsabs.harvard.edu/abs/1983ApJ...266..713O).
+  input `mag` is assumed to contain Oke AB magnitudes (Oke & Gunn 1983, ApJ, 266, 713;
+  http://adsabs.harvard.edu/abs/1983ApJ...266..713O).
 
 ### Output ###
 
@@ -53,7 +53,7 @@ julia> mag2flux(8.3, 12)
 7.58577575029182e-9
 
 julia> mag2flux(8.3, ABwave=12)
-3.6244115683017193e-7
+3.624411568301719e-7
 ```
 
 ### Notes ###

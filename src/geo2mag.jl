@@ -70,7 +70,7 @@ geomagnetic coordinates in 2016:
 julia> using AstroLib
 
 julia> geo2mag(ten(35,0,42), ten(135,46,6), 2016)
-(36.86579228937769, -60.184060536651614)
+(36.86579228937769, -60.1840605366516)
 ```
 
 ### Notes ###

@@ -47,26 +47,26 @@ coordinates, (2) proper motion, (3) parallax, and (4) radial velocity.
 User must supply a position, proper motion, radial velocity and parallax.
 Either scalars or arrays all of the same length can be supplied.
 
-(1) Position:
+1. Position:
 
-* `ra`: right ascension, in degrees
-* `dec`: declination, in degrees
+   * `ra`: right ascension, in degrees
+   * `dec`: declination, in degrees
 
-(2) Proper Motion
+2. Proper Motion
 
-* `pmra`: proper motion in right ascension in arc units (typically
-  milli-arcseconds/yr).  If given \$\\mu_\\alpha\$ -- proper motion in seconds of
-  time/year -- then this is equal to \$15 \\mu_\\alpha \\cos(\\text{dec})\$.
-* `pmdec`: proper motion in declination (typically mas/yr).
+   * `pmra`: proper motion in right ascension in arc units (typically
+     milli-arcseconds/yr).  If given \$\\mu_\\alpha\$ -- proper motion in seconds of
+     time/year -- then this is equal to \$15 \\mu_\\alpha \\cos(\\text{dec})\$.
+   * `pmdec`: proper motion in declination (typically mas/yr).
 
-(3) Radial Velocity
+3. Radial Velocity
 
-* `vrad`: velocity in km/s
+   * `vrad`: velocity in km/s
 
-(4) Parallax
+4. Parallax
 
-* `plx`: parallax with same distance units as proper motion measurements
-  typically milliarcseconds (mas)
+   * `plx`: parallax with same distance units as proper motion measurements
+     typically milliarcseconds (mas)
 
 If you know the distance in parsecs, then set `plx` to \$1000/\\text{distance}\$,
 if proper motion measurements are given in milli-arcseconds/yr.
@@ -105,7 +105,7 @@ Hipparcos catalog, and correct to the LSR.
 ```jldoctest
 julia> using AstroLib
 
-julia> ra=ten(1,9,42.3)*15.; dec = ten(61,32,49.5);
+julia> ra = ten(1,9,42.3)*15.; dec = ten(61,32,49.5);
 
 julia> pmra = 627.89;  pmdec = 77.84; # mas/yr
 

@@ -30,7 +30,7 @@ Find the date of the 60th and 234th days of the year 2016.
 julia> using AstroLib
 
 julia> ydn2md.(2016, [60, 234])
-2-element Array{Dates.Date,1}:
+2-element Vector{Dates.Date}:
  2016-02-29
  2016-08-21
 ```
@@ -39,6 +39,5 @@ julia> ydn2md.(2016, [60, 234])
 
 `ymd2dn` converts from a date to day of the year.
 """
-function ydn2md(year::Integer, day::Integer)
-    return Dates.firstdayofyear(Date(year)) + Dates.Day(day - 1)
-end
+ydn2md(year::Integer, day::Integer) =
+    Dates.firstdayofyear(Date(year)) + Dates.Day(day - 1)

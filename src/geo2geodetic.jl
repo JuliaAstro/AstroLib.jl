@@ -141,7 +141,7 @@ planetodetic) to geographic coordinates, can be used to estimate the accuracy of
 julia> using AstroLib
 
 julia> collect(geodetic2geo(geo2geodetic(67.2, 13.4, 1.2))) - [67.2, 13.4, 1.2]
-3-element Array{Float64,1}:
+3-element Vector{Float64}:
  -3.5672513831741526e-9
   0.0
   9.484211194177306e-10

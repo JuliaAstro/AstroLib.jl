@@ -51,14 +51,14 @@ center.
 
 ### Arguments ###
 
-* `units`: integer, can be either 0, or 1, or 2.  Describes units of inputs and
- output:
-    * 0: everything (input right ascensions and declinations, and output
-      distance) is radians
-    * 1: right ascensions are in decimal hours, declinations in decimal degrees,
-      output distance in degrees
-    * 2: right ascensions and declinations are in degrees, output distance in
-      degrees
+* `units`: integer, can be either 0, or 1, or 2.  Describes units of inputs
+  and output:
+  * 0: everything (input right ascensions and declinations, and output
+    distance) is radians
+  * 1: right ascensions are in decimal hours, declinations in decimal degrees,
+    output distance in degrees
+  * 2: right ascensions and declinations are in degrees, output distance in
+    degrees
 * `ra1`:  right ascension or longitude of point 1
 * `dec1`: declination or latitude of point 1
 * `ra2`: right ascension or longitude of point 2

@@ -8,15 +8,15 @@
 Convert an integer to a correct English ordinal string.
 
 ### Explanation ###
-The first four ordinal strings are "1st", "2nd", "3rd", "4th" ....
+The first four ordinal strings are "1st", "2nd", "3rd", "4th", ....
 
 ### Arguments ###
 
-* `num`: number to be made ordinal. It should be of type int.
+* `num`: number to be made ordinal. It should be of type `Integer`.
 
 ### Output ###
 
-* `result`: ordinal string, such as '1st' '3rd '164th' '87th' etc
+* `result`: ordinal string, such as "1st", "3rd", "164th", "87th", etc.
 
 ### Example ###
 
@@ -24,7 +24,7 @@ The first four ordinal strings are "1st", "2nd", "3rd", "4th" ....
 julia> using AstroLib
 
 julia> ordinal.(1:5)
-5-element Array{String,1}:
+5-element Vector{String}:
  "1st"
  "2nd"
  "3rd"

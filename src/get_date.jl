@@ -55,11 +55,11 @@ julia> get_date(DateTime(21937, 05, 30, 09, 59, 00), timetag=true)
 ### Notes ###
 
 1. A discussion of the DATExxx syntax in FITS headers can be found in
- http://www.cv.nrao.edu/fits/documents/standards/year2000.txt
+   http://www.cv.nrao.edu/fits/documents/standards/year2000.txt
 
 2. Those who wish to use need further flexibility in their date formats (e.g. to
- use TAI time) should look at Bill Thompson's time routines in
- http://sohowww.nascom.nasa.gov/solarsoft/gen/idl/time
+   use TAI time) should look at Bill Thompson's time routines in
+   http://sohowww.nascom.nasa.gov/solarsoft/gen/idl/time
 """
 function get_date(dt::DateTime, old::Bool, timetag::Bool)
     # Based on `Base.string' definition in base/dates/io.jl.

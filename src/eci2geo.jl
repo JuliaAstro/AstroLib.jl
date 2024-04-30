@@ -45,9 +45,9 @@ The three coordinates can be passed as a 3-tuple `(x, y, z)`.  In addition, `x`,
 
 The 3-tuple of geographical coordinate (latitude, longitude, altitude).
 
-* latitude: latitude, in degrees.
-* longitude: longitude, in degrees.
-* altitude: altitude, in kilometers.
+* `latitude`: latitude, in degrees.
+* `longitude`: longitude, in degrees.
+* `altitude`: altitude, in kilometers.
 
 If ECI coordinates are given as arrays, a 3-tuple of arrays of the same length
 is returned.
@@ -91,8 +91,7 @@ function eci2geo(x::AbstractArray{X}, y::AbstractArray{<:Real}, z::AbstractArray
     long = similar(x, typex)
     alt  = similar(x, typex)
     for i in eachindex(x)
-        lat[i], long[i], alt[i] =
-            eci2geo(x[i], y[i], z[i], jd[i])
+        lat[i], long[i], alt[i] = eci2geo(x[i], y[i], z[i], jd[i])
     end
     return lat, long, alt
 end

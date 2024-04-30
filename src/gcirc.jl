@@ -86,7 +86,7 @@ julia> gcirc(0, 120, -43, 175, +22)
 ### Notes ###
 
 * The function `sphdist` provides an alternate method of computing a spherical
- distance.
+  distance.
 * The Haversine formula can give rounding errors for antipodal points.
 
 Code of this function is based on IDL Astronomy User's Library.

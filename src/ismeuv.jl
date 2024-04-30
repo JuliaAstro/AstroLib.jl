@@ -8,7 +8,7 @@ function ismeuv(wave::T, hcol::T, he1col::T, he2col::T, fano::Bool) where {T<:Ab
     # minexp = -708.39642  from alog((machar(double=double).xmin)) where double = 1b in IDL
     z = sqrt(r/(1 - r))
     denom = -expm1(-2*T(π)*z)
-    tauH = ((3.44e-16)*(r^4)*exp(-4*z*atan(1/z))*hcol)/denom
+    tauH = (3.44e-16 * r^4 *exp(-4*z*atan(1/z)) * hcol) / denom
     r *= 4
     tauHe2 = zero(T)
     if r < 1
@@ -78,12 +78,11 @@ The EUV optical depth is computed from the photoionization of hydrogen and heliu
 One has a model EUV spectrum with wavelength, w (in Angstroms).
 Find the EUV optical depth by 1e18 cm-2 of HI, with N(HeI)/N(HI) = N(HeII)/N(HI) = 0.05.
 
-
 ```jldoctest
 julia> using AstroLib
 
 julia> ismeuv.([670, 910], 1e19, 5e17, 5e17)
-2-element Array{Float64,1}:
+2-element Vector{Float64}:
  27.35393320556168
  62.683796028917286
 ```

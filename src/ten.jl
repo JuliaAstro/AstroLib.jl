@@ -80,4 +80,4 @@ If it is important to give sense to negative zero, you can either make sure to
 pass a floating point negative zero `-0.0` (this is the best option), or use
 negative minutes and seconds, or non-integer negative degrees and minutes.
 """
-ten
+function ten end

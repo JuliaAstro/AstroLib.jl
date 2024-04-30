@@ -62,8 +62,20 @@ function sunpos(jd::Real; radians::Bool = false)
     end
 end
 
+function sunpos(jd::AbstractVector{J}; radians::Bool=false) where {J<:Real}
+    typej = float(J)
+    ra = similar(jd, typej)
+    dec = similar(jd, typej)
+    longmed = similar(jd, typej)
+    oblt = similar(jd, typej)
+    for i in eachindex(jd)
+        ra[i], dec[i], longmed[i], oblt[i] = sunpos(jd[i], radians=radians)
+    end
+    return ra, dec, longmed, oblt
+end
+
 """
-    sunpos(jd[, radians=true]) -> ra, dec, elong, obliquity
+    sunpos(jd[, radians=false]) -> ra, dec, elong, obliquity
 
 ### Purpose ###
 
@@ -98,30 +110,30 @@ by CD Pike, which was adapted from a FORTRAN routine by B. Emerson (RGO).
 
 ### Example ###
 
-(1) Find the apparent right ascension and declination of the Sun on May 1, 1982
+- Find the apparent right ascension and declination of the Sun on May 1, 1982
 
-```jldoctest
-julia> using AstroLib
+  ```jldoctest
+  julia> using AstroLib
 
-julia> adstring(sunpos(jdcnv(1982, 5, 1))[1:2], precision=2)
-" 02 31 32.614  +14 54 34.92"
-```
+  julia> adstring(sunpos(jdcnv(1982, 5, 1))[1:2], precision=2)
+  " 02 31 32.614  +14 54 34.92"
+  ```
 
-The Astronomical Almanac gives `02 31 32.58 +14 54 34.9` so the error for this
-case is < 0.5".
+  The Astronomical Almanac gives `02 31 32.58 +14 54 34.9` so the error for this
+  case is < 0.5".
 
-(2) Plot the apparent right ascension, in hours, and declination of the Sun, in
-degrees, for every day in 2016.  Use
-[PyPlot.jl](https://github.com/JuliaPlots/Plots.jl/) for plotting.
+- Plot the apparent right ascension, in hours, and declination of the Sun, in
+  degrees, for every day in 2016.  Use
+  [PyPlot.jl](https://github.com/JuliaPlots/Plots.jl/) for plotting.
 
-```julia
-using PyPlot
-using Dates
+  ```julia
+  using PyPlot
+  using Dates
 
-days = DateTime(2016):Day(1):DateTime(2016, 12, 31);
-ra, declin = sunpos(jdcnv.(days));
-plot(days, ra/15); plot(days, declin)
-```
+  days = DateTime(2016):Day(1):DateTime(2016, 12, 31);
+  ra, declin = sunpos(jdcnv.(days));
+  plot(days, ra/15); plot(days, declin)
+  ```
 
 ### Notes ###
 
@@ -134,14 +146,4 @@ The returned `ra` and `dec` are in the given date's equinox.
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-function sunpos(jd::AbstractVector{J}; radians::Bool=false) where {J<:Real}
-    typej = float(J)
-    ra = similar(jd, typej)
-    dec = similar(jd, typej)
-    longmed = similar(jd, typej)
-    oblt = similar(jd, typej)
-    for i in eachindex(jd)
-        ra[i], dec[i], longmed[i], oblt[i] = sunpos(jd[i], radians=radians)
-    end
-    return ra, dec, longmed, oblt
-end
+function sunpos end

@@ -43,13 +43,13 @@ format of the month name is influenced by the optional keywords.
 julia> using AstroLib
 
 julia> month_cnv.(["janua", "SEP", "aUgUsT"])
-3-element Array{Int64,1}:
+3-element Vector{Int64}:
  1
  9
  8
 
 julia> month_cnv.([2, 12, 6], short=true, low=true)
-3-element Array{String,1}:
+3-element Vector{String}:
  "feb"
  "dec"
  "jun"

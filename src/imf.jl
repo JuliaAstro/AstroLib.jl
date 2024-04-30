@@ -66,7 +66,7 @@ Show the number of stars per unit mass interval at 3 Msun for a Salpeter
 julia> using AstroLib
 
 julia> imf([3], [-1.35], [0.1, 110]) / 3
-1-element Array{Float64,1}:
+1-element Vector{Float64}:
  0.01294143518151214
 ```
 
@@ -74,5 +74,7 @@ julia> imf([3], [-1.35], [0.1, 110]) / 3
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-imf(mass::AbstractVector{<:Real}, expon::AbstractVector{<:Real}, mass_range::AbstractVector{<:Real}) =
-    imf(float(mass), float(expon), float(mass_range))
+imf(mass::AbstractVector{<:Real},
+    expon::AbstractVector{<:Real},
+    mass_range::AbstractVector{<:Real}) =
+        imf(float(mass), float(expon), float(mass_range))
