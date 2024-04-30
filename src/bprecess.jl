@@ -177,8 +177,8 @@ http://adsabs.harvard.edu/abs/1983A%26A...128..263A.
 
 ### Example ###
 
-The SAO2000 catalogue gives the J2000 position and proper motion for the star HD
-119288.  Find the B1950 position.
+The SAO2000 catalogue gives the J2000 position and proper motion for the star
+HD 119288.  Find the B1950 position.
 
 * RA(2000) = 13h 42m 12.740s
 * Dec(2000) = 8d 23' 17.69''
@@ -210,4 +210,4 @@ and equinox of J2000.0" -- from the Explanatory Supplement (1992), p. 180
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-bprecess
+function bprecess end
