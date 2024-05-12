@@ -2,7 +2,9 @@
 # Copyright (C) 2016 Mosè Giordano.
 
 function trueanom(E::T, e::T) where {T<:AbstractFloat}
-    @assert e >= 0 "eccentricity must be in the range [0, 1]"
+    if e < 0 || e > 1
+        throw(DomainError("eccentricity must be in the range [0, 1]"))
+    end
     return 2 * atan(sqrt((1 + e) / (1 - e)) * tan(E / 2))
 end
 

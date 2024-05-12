@@ -3,7 +3,8 @@
 function _euler(ai::T, bi::T, select::Integer, FK4::Bool, radians::Bool) where {T<:AbstractFloat}
 
     if select>6 || select<1
-        error("Input for coordinate transformation should be an integer in the range 1:6")
+        throw(DomainError(
+            "Input for coordinate transformation should be an integer in the range 1:6"))
     end
 
     if FK4
@@ -98,7 +99,9 @@ euler(aibi::Tuple{Real, Real}, select::Integer; FK4::Bool=false, radians::Bool=f
 
 function euler(ai::AbstractVector{R}, bi::AbstractVector{<:Real}, select::Integer;
                FK4::Bool=false, radians::Bool=false) where {R<:Real}
-    @assert length(ai) == length(bi) "ai and bi arrays should be of the same length"
+    if length(ai) != length(bi)
+        throw(ArgumentError("ai and bi arrays should be of the same length"))
+    end
     typeai = float(R)
     ai_out  = similar(ai,  typeai)
     bi_out = similar(bi, typeai)

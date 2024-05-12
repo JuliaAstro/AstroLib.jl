@@ -85,7 +85,9 @@ hadec2altaz(hadec::Tuple{Real, Real}, lat::Real; ws::Bool=false) =
 
 function hadec2altaz(ha::AbstractArray{R}, dec::AbstractArray{<:Real},
                      lat::AbstractArray{<:Real}; ws::Bool=false) where {R<:Real}
-    @assert length(ha) == length(dec) == length(lat)
+    if !(length(ha) == length(dec) == length(lat))
+        throw(ArgumentError("ha, dec, and lat arrays must have the same length"))
+    end
     typeha = float(R)
     alt = similar(ha, typeha)
     az  = similar(ha, typeha)

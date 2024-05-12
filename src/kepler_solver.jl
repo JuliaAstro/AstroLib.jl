@@ -2,7 +2,9 @@
 # Copyright (C) 2016 Mosè Giordano.
 
 function kepler_solver(_M::Real, e::Real)
-    @assert 0 <= e <= 1 "eccentricity must be in the range [0, 1]"
+    if e < 0 || e > 1
+        throw(DomainError("eccentricity must be in the range [0, 1]"))
+    end
     # M must be in the range [-pi, pi], see Markley (1995), page 2.
     M = rem2pi(_M, RoundNearest)
     T = float(promote_type(typeof(M), typeof(e)))

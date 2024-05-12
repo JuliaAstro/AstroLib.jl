@@ -78,7 +78,10 @@ geo2eci(lla::Tuple{Real, Real, Real}, jd::Real) =
 function geo2eci(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
                  alt::AbstractArray{<:Real},
                  jd::AbstractArray{<:Real}) where {LA<:Real}
-    @assert length(lat) == length(long) == length(alt) == length(jd)
+    if !(length(lat) == length(long) == length(alt) == length(jd))
+        throw(ArgumentError(
+            "lat, long, alt, and jd arrays must have the same length"))
+    end
     typela = float(LA)
     x = similar(lat, typela)
     y = similar(lat, typela)

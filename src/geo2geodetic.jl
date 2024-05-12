@@ -159,7 +159,9 @@ geo2geodetic(lla::Tuple{Real, Real, Real}, eq::Real, pol::Real) =
 function geo2geodetic(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
                       alt::AbstractArray{<:Real},
                       eq::Real, pol::Real) where {LA<:Real}
-    @assert length(lat) == length(long) == length(alt)
+    if !(length(lat) == length(long) == length(alt))
+        throw(ArgumentError("lat, long, and alt arrays must have the same length"))
+    end
     typela  = float(LA)
     outlat  = similar(lat, typela)
     outlong = similar(lat, typela)
@@ -183,7 +185,9 @@ geo2geodetic(lla::Tuple{Real, Real, Real}, planet::AbstractString="earth") =
 function geo2geodetic(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
                       alt::AbstractArray{<:Real},
                       planet::AbstractString="earth") where {LA<:Real}
-    @assert length(lat) == length(long) == length(alt)
+    if !(length(lat) == length(long) == length(alt))
+        throw(ArgumentError("lat, long, and alt arrays must have the same length"))
+    end
     typela  = float(LA)
     outlat  = similar(lat, typela)
     outlong = similar(lat, typela)

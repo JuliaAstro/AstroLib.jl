@@ -39,7 +39,7 @@ Code of this function is based on IDL Astronomy User's Library.
 """
 function ordinal(num::Integer)
     a = num % 100
-    if a== 11 || a == 12 || a == 13
+    if a == 11 || a == 12 || a == 13
         suffix = "th"
     else
         a = num % 10

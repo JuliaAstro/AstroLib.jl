@@ -67,7 +67,9 @@ planet_coords(date::Real, num::Integer) = _planet_coords(float(date), num)
 
 function planet_coords(date::AbstractVector{R},
                        num::AbstractVector{<:Integer}) where {R<:Real}
-    @assert length(date) == length(num) "date and num arrays should be of the same length"
+    if length(date) != length(num)
+      throw(ArgumentError("date and num arrays should be of the same length"))
+    end
     typedate = float(R)
     ra_out  = similar(date, typedate)
     dec_out = similar(date, typedate)

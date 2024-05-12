@@ -112,7 +112,9 @@ precess(radec::Tuple{Real, Real}, equinox1::Real, equinox2::Real;
 function precess(ra::AbstractArray{R}, dec::AbstractArray{D}, equinox1::Real,
                  equinox2::Real; FK4::Bool=false,
                  radians::Bool=false) where {R<:Real, D<:Real}
-    @assert length(ra) == length(dec) "ra and dec arrays should be of the same length"
+    if length(ra) != length(dec)
+        throw(ArgumentError("ra and dec arrays should be of the same length"))
+    end
     typera = float(R)
     ra_out  = similar(ra,  typera)
     dec_out = similar(dec, typera)

@@ -234,7 +234,7 @@ end
     glong, glat = @inferred(euler([0.45, 130], [16.28, 53.65], 5))
     @test glong ≈ [96.9525940157568, 138.09922696730337]
     @test glat ≈ [-43.90672396295434, 46.95527026543361]
-    @test_throws ErrorException @inferred(euler((45,45), 7))
+    @test_throws DomainError @inferred(euler((45,45), 7))
 end
 
 @testset "flux2mag" begin
@@ -346,7 +346,7 @@ end
     @test @inferred(gcirc(0, (120, -43), (175, +22)) )   ≈  1.590442261600714
     @test gcirc.(1, [120], [-43],  175, +22)             ≈ [415908.56615322345]
     @test gcirc.(2,  120, -43,  [175], [+22])            ≈ [296389.3666794745]
-    @test_throws ErrorException @inferred(gcirc(3, 0, 0, 0, 0))
+    @test_throws DomainError @inferred(gcirc(3, 0, 0, 0, 0))
 end
 
 @testset "hadec2altaz" begin
@@ -379,7 +379,7 @@ end
 # correlated with the output from helio routine of IDL AstroLib, with
 # differences only in the least significant digits (except for `hrad`` output of Mars)
 @testset "helio" begin
-    @test_throws ErrorException @inferred(helio(jdcnv(2005,07,17,2,6,9), 10))
+    @test_throws DomainError @inferred(helio(jdcnv(2005,07,17,2,6,9), 10))
     hrad_out, hlong_out, hlat_out = @inferred(helio(jdcnv(2000,08,23,0), 2, true))
     @test hrad_out ≈ 0.7213758288364316
     @test hlong_out ≈ 3.462574978561256
@@ -425,7 +425,7 @@ end
 # correlated with the output from imf routine of IDL AstroLib, with
 # differences only in the least significant digits.
 @testset "imf" begin
-    @test_throws ErrorException @inferred(imf([5], [-6.75], [0.9]))
+    @test_throws ArgumentError @inferred(imf([5], [-6.75], [0.9]))
     @test @inferred(imf([0.1, 0.01], [-0.6, -1], [ 0.007, 1.8, 110])) ≈
         [0.49627714725007616, 1.9757149090208912]
     @test imf.([[3],[5]], [[-1.35], [-0.6, -1.7]], [[0.1, 100], [0.007, 1.8, 110]]) ≈
@@ -509,8 +509,8 @@ end
     end
     @test kepler_solver.([pi/4, pi/6, 8pi/3], 0) ≈ [pi/4, pi/6, 2pi/3]
     @test @inferred(kepler_solver(0, 1)) == 0.0
-    @test_throws AssertionError @inferred(kepler_solver(pi, -0.5))
-    @test_throws AssertionError @inferred(kepler_solver(pi,  1.5))
+    @test_throws DomainError @inferred(kepler_solver(pi, -0.5))
+    @test_throws DomainError @inferred(kepler_solver(pi,  1.5))
 end
 
 @testset "lsf_rotate" begin
@@ -609,8 +609,8 @@ end
 # correlated with the output from planet_coord routine of IDL AstroLib, with
 # differences only in the least significant digits
 @testset "planet_coords" begin
-    @test_throws ErrorException @inferred(planet_coords(DateTime(2013, 07, 22,
-                                                                 03, 19, 06),0))
+    @test_throws DomainError @inferred(planet_coords(DateTime(2013, 07, 22,
+                                                              03, 19, 06),0))
     ra_out, dec_out = @inferred(planet_coords([AstroLib.J2000, 2.45e6], [2,8]))
     @test ra_out[1] ≈ 239.8965221579066
     @test ra_out[2] ≈ 294.55483837772476
@@ -642,7 +642,7 @@ end
     @test @inferred(posang(0, (120, -43), (175, +22)))    ≈ -1.5842896165356724
     @test posang.(1, [120], [-43],  175, +22)  ≈ [82.97831348792039]
     @test posang.(2,  120, -43,  [175], [+22]) ≈ [50.02816530382374]
-    @test_throws ErrorException @inferred(posang(3, 0, 0, 0, 0))
+    @test_throws DomainError @inferred(posang(3, 0, 0, 0, 0))
 end
 
 @testset "precess" begin
@@ -854,7 +854,7 @@ end
     @test trueanom.([pi/4, pi/6, 8pi/3], 0)            ≈ [pi/4, pi/6, 2pi/3]
     @test @inferred(trueanom(3pi/2, 0.8))              ≈ -2.498091544796509
     @test @inferred(trueanom(0.1, 1))                  ≈ pi
-    @test_throws AssertionError @inferred(trueanom(pi, -0.5))
+    @test_throws DomainError @inferred(trueanom(pi, -0.5))
     @test_throws DomainError @inferred(trueanom(pi,  1.5))
 end
 
@@ -862,7 +862,7 @@ end
 # correlated with the output from uvbybeta routine of IDL AstroLib, with
 # differences only in the least significant digits.
 @testset "uvbybeta" begin
-    @test_throws ErrorException @inferred uvbybeta(NaN, NaN, NaN, 9, NaN)
+    @test_throws DomainError @inferred uvbybeta(NaN, NaN, NaN, 9, NaN)
     te_o, mv_o, eby_o, delm_o, radius_o = @inferred uvbybeta(-0.009, 0.11, 0.68, 1)
     @test te_o ≈ 12719.770257555097
     @test mv_o ≈ -0.08913388245565224

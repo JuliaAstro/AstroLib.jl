@@ -23,7 +23,8 @@ function gcirc(units::Integer, ra1::T, dec1::T, ra2::T, dec2::T) where {T<:Abstr
         φ_2 = deg2rad(dec2)
     else
         # In any other case throw an error.
-        error("units must be 0 (radians), 1 (hours, degrees) or 2 (degrees)")
+        throw(DomainError(
+            "units must be 0 (radians), 1 (hours, degrees) or 2 (degrees)"))
     end
     Δφ_2 = (φ_2 - φ_1) * 0.5
     Δλ_2 = (λ_2 - λ_1) * 0.5

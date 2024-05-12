@@ -60,7 +60,9 @@ radec(ra::Real, dec::Real; hours::Bool=false) =
 
 function radec(ra::AbstractArray{R}, dec::AbstractArray{D};
                hours::Bool=false) where {R<:Real, D<:Real}
-    @assert length(ra) == length(dec)
+    if length(ra) != length(dec)
+        throw(ArgumentError("ra and dec arrays should be of the same length"))
+    end
     typera = float(R)
     ra_hr   = similar(ra, typera)
     ra_min  = similar(ra, typera)

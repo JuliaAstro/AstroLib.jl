@@ -56,7 +56,9 @@ deredd(Eby::Real, by::Real, m1::Real, c1::Real, ub::Real) =
 function deredd(Eby::AbstractArray{E}, by::AbstractArray{<:Real},
                 m1::AbstractArray{<:Real}, c1::AbstractArray{<:Real},
                 ub::AbstractArray{<:Real}) where {E<:Real}
-    @assert length(Eby) == length(by) == length(m1) == length(c1) == length(ub)
+    if !(length(Eby) == length(by) == length(m1) == length(c1) == length(ub))
+        throw(ArgumentError("Eby, by, m1, c1, and ub arrays should be of the same length"))
+    end
     typeeby = float(E)
     by0 = similar(Eby, typeeby)
     m0  = similar(Eby, typeeby)

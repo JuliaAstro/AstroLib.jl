@@ -20,7 +20,9 @@ const Mjprec =
 # commented, in case someone is interested.
 function _jprecess(ra::T, dec::T, parallax::T, radvel::T, epoch::T,
                    muradec::Vector{T}) where {T<:AbstractFloat}
-    @assert length(muradec) == 2
+    if length(muradec) != 2
+        throw(DomainError("muradec must have length 2"))
+    end
     sinra, cosra  = sincos(deg2rad(ra))
     sindec, cosdec = sincos(deg2rad(dec))
     if isfinite(epoch) && epoch != 1950
@@ -94,7 +96,11 @@ function jprecess(ra::AbstractArray{R}, dec::AbstractArray{<:Real},
                   muradec::AbstractArray{<:Real};
                   parallax::AbstractArray{<:Real}=zeros(R, length(ra)),
                   radvel::AbstractArray{<:Real}=zeros(R, length(ra))) where {R<:Real}
-    @assert length(ra) == length(dec) == size(muradec)[2] == length(parallax) == length(radvel)
+    if !(length(ra) == length(dec) == size(muradec)[2] == length(parallax) == length(radvel))
+        # TODO write more helpful error message
+        throw(ArgumentError(
+            "ra, dec, muradec[:,2], parallax, and radvel must have the same length"))
+    end
     typer = float(R)
     ra2000  = similar(ra, typer)
     dec2000 = similar(dec, typer)
@@ -107,7 +113,9 @@ end
 
 function jprecess(ra::AbstractArray{R}, dec::AbstractArray{<:Real},
                   epoch::Real=1950.0) where {R<:Real}
-    @assert length(ra) == length(dec)
+    if length(ra) != length(dec)
+        throw(ArgumentError("ra and dec arrays should be of the same length"))
+    end
     typer = float(R)
     ra2000  = similar(ra, typer)
     dec2000 = similar(dec, typer)

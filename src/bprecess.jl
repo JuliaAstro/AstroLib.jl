@@ -20,7 +20,9 @@ const Mbprec =
 # commented, in case someone is interested.
 function _bprecess(ra::T, dec::T, parallax::T, radvel::T,
                    epoch::T, muradec::Vector{T}) where {T<:AbstractFloat}
-    @assert length(muradec) == 2
+    if length(muradec) != 2
+        throw(DomainError("muradec must have length 2"))
+    end
     sinra,  cosra  = sincos(deg2rad(ra))
     sindec, cosdec = sincos(deg2rad(dec))
     r0 = SVector(cosra*cosdec,  sinra*cosdec,  sindec)
@@ -91,7 +93,10 @@ function bprecess(ra::AbstractArray{R}, dec::AbstractArray{<:Real},
                   muradec::AbstractArray{<:Real};
                   parallax::AbstractArray{<:Real}=zeros(R, length(ra)),
                   radvel::AbstractArray{<:Real}=zeros(R, length(ra))) where {R<:Real}
-    @assert length(ra) == length(dec) == size(muradec)[2] == length(parallax) == length(radvel)
+    if !(length(ra) == length(dec) == size(muradec, 2) == length(parallax) == length(radvel))
+        throw(ArgumentError(
+            "ra, dec, muradec[:,2], parallax, and radvel arrays should be of the same length"))
+    end
     typer = float(R)
     ra1950  = similar(ra, typer)
     dec1950 = similar(dec, typer)
@@ -104,7 +109,9 @@ end
 
 function bprecess(ra::AbstractArray{R}, dec::AbstractArray{D},
                   epoch::Real=2000.0) where {R<:Real,D<:Real}
-    @assert length(ra) == length(dec)
+    if length(ra) != length(dec)
+        throw(ArgumentError("ra and dec arrays should be of the same length"))
+    end
     typer = float(R)
     ra1950  = similar(ra, typer)
     dec1950 = similar(dec, typer)

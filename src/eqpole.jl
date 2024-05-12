@@ -61,7 +61,9 @@ eqpole(l::Real, b::Real; southpole::Bool=false) =
 
 function eqpole(l::AbstractArray{L}, b::AbstractArray{<:Real};
                 southpole::Bool=false) where {L<:Real}
-    @assert length(l) == length(b)
+    if length(l) != length(b)
+        throw(ArgumentError("l and b arrays should be of the same length"))
+    end
     typel = float(L)
     x = similar(l, typel)
     y = similar(l, typel)

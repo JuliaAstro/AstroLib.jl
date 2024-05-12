@@ -58,7 +58,9 @@ polrec(r_a::Tuple{Real, Real}; degrees::Bool=false) = polrec(r_a...,
 
 function polrec(r::AbstractArray{R}, a::AbstractArray{A};
                 degrees::Bool=false) where {R<:Real, A<:Real}
-    @assert length(r) == length(a)
+    if length(r) != length(a)
+        throw(ArgumentError("r and a arrays should be of the same length"))
+    end
     typer = float(R)
     x = similar(r, typer)
     y = similar(r, typer)

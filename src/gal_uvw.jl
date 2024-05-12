@@ -131,8 +131,11 @@ function gal_uvw(ra::AbstractArray{R}, dec::AbstractArray{<:Real},
                  pmra::AbstractArray{<:Real}, pmdec::AbstractArray{<:Real},
                  vrad::AbstractArray{<:Real}, plx::AbstractArray{<:Real};
                  lsr::Bool=false) where {R<:Real}
-    @assert length(ra) == length(dec) == length(pmra) ==
-        length(pmdec) == length(vrad) == length(plx)
+    if !(length(ra) == length(dec) == length(pmra) ==
+         length(pmdec) == length(vrad) == length(plx))
+        throw(ArgumentError(
+            "ra, dec, pmra, pmdec, vrad, and plx arrays must all have the same length"))
+    end
     typer = float(R)
     u = similar(ra, typer)
     v = similar(ra, typer)

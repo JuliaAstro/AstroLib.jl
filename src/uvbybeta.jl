@@ -4,8 +4,9 @@ function _uvbybeta(by::T, m1::T, c1::T, hbeta::T, eby_in::T,
                    n::Integer) where {T<:AbstractFloat}
     # Rm1 = -0.33 & Rc1 = 0.19 & Rub = 1.53
     if n < 1 || n > 8
-      error("Input should be an integer in the range 1:8, giving approximate
-            stellar classification")
+        throw(DomainError(
+            "Input should be an integer in the range 1:8, giving approximate
+            stellar classification"))
     end
     ub =  c1 + 2 * (m1 + by)
     # For group 1, beta is a luminosity indicator, c0 is a temperature indicator.
