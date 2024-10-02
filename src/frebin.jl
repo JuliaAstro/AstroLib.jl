@@ -21,11 +21,11 @@ function _frebin(image::AbstractArray{T}, nsout::S, nlout::S, total::Bool) where
     if (nsout % ns == 0) && (nlout % nl == 0)
         xindex = (1:nsout) / (nsout/ns)
         if isone(nl)  # 1D case, linear interpolation
-            interpfunc = extrapolate(interpolate(image, BSpline(Linear())), Flat())
+            interpfunc = extrapolate(interpolate(image, BSpline(Constant())), Flat())
             return interpfunc(xindex) * (total ? sbox : 1.)
         end
         yindex = (1:nlout) / (nlout/nl)
-        interpfunc = extrapolate(interpolate(image, BSpline(Linear())), Flat())
+        interpfunc = extrapolate(interpolate(image, BSpline(Constant())), Flat())
         return [interpfunc(x, y) for x in xindex, y in yindex] .* (total ? sbox.*lbox : 1.)
     end
 
@@ -138,7 +138,7 @@ julia> sum(im1)
 ### Notes ###
 
 If the input image sizes are a multiple of the output image sizes
-then `frebin` is equivalent to the julia Interpolations.jl functions for 
+then `frebin` is equivalent to summing over the grid multiples for 
 compression, and simple pixel duplication on expansion.
  
 If the number of output pixels are not integers, the output image
