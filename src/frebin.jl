@@ -127,11 +127,11 @@ the sum of the x and y coordinates in the original image:
 ```jldoctest
 julia> using AstroLib
 
-julia> im = [x+y for x in 1:800, y in 1:800]
-julia> im1 = frebin(im, 850, 900, total=true);
-julia> sum(im)
+julia> image = [x+y for x in 1:800, y in 1:800]
+julia> image1 = frebin(image, 850, 900, total=true);
+julia> sum(image)
 512640000
-julia> sum(im1)
+julia> sum(image1)
 5.126400000000241e8
 ```
 
