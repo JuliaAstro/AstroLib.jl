@@ -81,5 +81,9 @@ Code of this function is based on IDL Astronomy User's Library.
 
 """
 function fshift(image::AbstractArray{R}, Δx::Real, Δy::Real) where {R<:Real}
+    # check that the image dimensions are 2D
+    nd = ndims(image)
+    @assert nd == 2 "The input image must be 2D!"
+
     _fshift(float(image), promote(float(Δx), float(Δy))...)
 end

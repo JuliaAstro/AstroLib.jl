@@ -106,7 +106,7 @@ Shrink or expand the size of an array an arbitrary amount using interpolation
 
 ### Arguments ###
 
-* `image`: the array representing the image to be rebinned.
+* `image`: the array representing the 1D or 2D image to be rebinned.
 * `nsout`: number of samples in the output image, numeric scalar.
 * `nlout` (optional): number of lines in the output image, numeric scalar (default = 1).
 * `total` (optional boolean keyword): if true, the output pixels will be the 
@@ -167,5 +167,10 @@ Improve speed by addressing arrays in memory order W.Landsman Dec/Jan 2001
 Code of this function is based on IDL Astronomy User's Library.
 """
 function frebin(image::AbstractArray{R}, nsout::Real, nlout::Real=1; total::Bool=false) where {R<:Real}
+    
+    # check that the image dimensions are either 1D or 2D
+    nd = ndims(image)
+    @assert nd in (1,2) "The input image must be either 1D or 2D!"
+
     _frebin(float(image), promote(floor(Int, nsout), floor(Int, nlout))..., total)
 end
