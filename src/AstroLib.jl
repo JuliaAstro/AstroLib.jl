@@ -6,6 +6,7 @@ __precompile__()
 module AstroLib
 using Dates, LinearAlgebra, Printf
 using StaticArrays
+using Interpolations
 
 # Note on function definitions in this package.  Most functions are defined as
 # follows:
