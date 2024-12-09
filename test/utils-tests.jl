@@ -749,11 +749,13 @@ end
     @test dec ≈ 14.909699471099517
     @test lon ≈ 40.31067053890748
     @test obl ≈ 23.440840980112657
+    @test (ra, dec, lon, obl) === @inferred(sunpos(DateTime(1982, 5, 1)))
     ra, dec, lon, obl = @inferred(sunpos(jdcnv.([DateTime(2016, 5, 10)]), radians=true))
     @test ra  ≈ [0.8259691339090751]
     @test dec ≈ [0.3085047454107549]
     @test lon ≈ [0.8687853454154388]
     @test obl ≈ [0.40901175207670365]
+    @test (ra, dec, lon, obl) == @inferred(sunpos([DateTime(2016, 5, 10)], radians=true))
     ra, dec, lon, obl = @inferred(sunpos([2457531]))
     @test ra  ≈ [59.71655864208797]
     @test dec ≈ [20.52127006818727]

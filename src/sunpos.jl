@@ -74,6 +74,11 @@ function sunpos(jd::AbstractVector{J}; radians::Bool=false) where {J<:Real}
     return ra, dec, longmed, oblt
 end
 
+sunpos(dt::DateTime; radians::Bool=false) =
+    sunpos(datetime2julian(dt); radians=radians)
+sunpos(dt::AbstractVector{<:DateTime}; radians::Bool=false) =
+    sunpos(datetime2julian.(dt); radians=radians)
+
 """
     sunpos(jd[, radians=false]) -> ra, dec, elong, obliquity
 
@@ -84,8 +89,8 @@ Compute the right ascension and declination of the Sun at a given date.
 ### Arguments ###
 
 * `jd`: the Julian date of when you want to calculate Sun position.  It can be
-  either a scalar or a vector.  Use `jdcnv` to get the Julian date for a given
-  date and time.
+  either a scalar or a vector.  If `jd` is a `Dates.DateTime` it will be
+  automatically converted.
 * `radians` (optional boolean keyword): if set to `true`, all output quantities
   are given in radians.  The default is `false`, so all quantities are given in
   degrees.
