@@ -55,6 +55,12 @@ export euler
 include("flux2mag.jl")
 export flux2mag
 
+include("frebin.jl")
+export frebin
+
+include("fshift.jl")
+export fshift
+
 include("gal_uvw.jl")
 export gal_uvw
 
