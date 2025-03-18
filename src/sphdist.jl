@@ -47,8 +47,8 @@ is expressed in radians unless `degrees` keyword is set to `true`.
 ```jldoctest
 julia> using AstroLib
 
-julia> sphdist(120, -43, 175, +22)
-1.5904422616007134
+julia> sphdist(120, -43, 175, +22, degrees=true)
+82.33037963318735
 ```
 
 ### Notes ###
