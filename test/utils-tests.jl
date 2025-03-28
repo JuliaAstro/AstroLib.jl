@@ -338,12 +338,20 @@ end
 end
 
 @testset "gcirc" begin
+    # Test AstroCoordinate constructor with invalid units
+    @test_throws ArgumentError AstroCoordinate(1.0, 1.0, :invalid_units)
+    
+    # Original tests for basic functionality
     @test gcirc(0, 2.0, -0.75, 3.0, 0.4) ≈ 
           SkyCoords.separation(
               SkyCoords.ICRSCoords(2.0, -0.75),
               SkyCoords.ICRSCoords(3.0, 0.4))
     
-    # Test hours/degrees input (units = 1)
+    # Test AstroCoordinate constructor with all valid units
+    @test isa(AstroCoordinate(1.0, 1.0, :radians), AstroCoordinate)
+    @test isa(AstroCoordinate(1.0, 1.0, :hours_degrees), AstroCoordinate)
+    @test isa(AstroCoordinate(1.0, 1.0, :degrees), AstroCoordinate)
+
     ra1_hours, dec1_deg = 12.0, -43.0
     ra2_hours, dec2_deg = 15.0, 22.0
     result1 = gcirc(1, ra1_hours, dec1_deg, ra2_hours, dec2_deg)
@@ -353,15 +361,15 @@ end
     @test result1 ≈ expected1
     @test gcirc.(0, [0,1,2], [1,2,3], [2,3,4], [3,4,5]) ≈
         [1.222450611061632, 2.500353926443337, 1.5892569925227757]
-
+    
     @test @inferred(gcirc(0, 120, -43, 175, +22)) ≈ 1.590442261600714
     @test @inferred(gcirc(1, (120, -43), 175, +22)) ≈ 415908.56615322345
     @test @inferred(gcirc(2, 120, -43, (175, +22))) ≈ 296389.3666794745
     @test @inferred(gcirc(0, (120, -43), (175, +22))) ≈ 1.590442261600714
-
+    
     @test gcirc.(1, [120], [-43], 175, +22) ≈ [415908.56615322345]
     @test gcirc.(2, 120, -43, [175], [+22]) ≈ [296389.3666794745]
-
+    
     # Test error conditions
     @test_throws DomainError gcirc(3, 120.0, -43.0, 175.0, 22.0)
     @test_throws DomainError @inferred(gcirc(3, 0, 0, 0, 0))
