@@ -1,0 +1,14 @@
+{
+    "name": "Julia Development Container",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "features": {
+        "ghcr.io/julia-vscode/devcontainer-features/julia:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "julialang.language-julia"
+            ]
+        }
+    }
+}
