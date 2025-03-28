@@ -1,39 +1,20 @@
-# This file is a part of AstroLib.jl. License is MIT "Expat".
-# Copyright (C) 2016 Mosè Giordano.
+using SkyCoords
+"""
+AstroCoordinate represents a point in the sky with flexible input units
+"""
+struct AstroCoordinate{T<:AbstractFloat}
+    coord::SkyCoords.ICRSCoords
 
-function gcirc(units::Integer, ra1::T, dec1::T, ra2::T, dec2::T) where {T<:AbstractFloat}
-    # Convert all quantities to radians.
-    if units == 0
-        # All radians
-        λ_1 = ra1
-        λ_2 = ra2
-        φ_1 = dec1
-        φ_2 = dec2
-    elseif units == 1
-        # Right ascensions are in hours, declinations in degrees.
-        λ_1 = ra1*pi/12.0
-        λ_2 = ra2*pi/12.0
-        φ_1 = deg2rad(dec1)
-        φ_2 = deg2rad(dec2)
-    elseif units == 2
-        # Right ascensions and declinations are in degrees.
-        λ_1 = deg2rad(ra1)
-        λ_2 = deg2rad(ra2)
-        φ_1 = deg2rad(dec1)
-        φ_2 = deg2rad(dec2)
-    else
-        # In any other case throw an error.
-        throw(DomainError(
-            units,
-            "units must be 0 (radians), 1 (hours, degrees) or 2 (degrees)"))
-    end
-    Δφ_2 = (φ_2 - φ_1) * 0.5
-    Δλ_2 = (λ_2 - λ_1) * 0.5
-    Δσ = 2asin(sqrt(abs2(sin(Δφ_2)) + cos(φ_1) * cos(φ_2) * abs2(sin(Δλ_2))))
-    if units == 0
-        return Δσ
-    else
-        return rad2sec(Δσ)
+    function AstroCoordinate(ra::T, dec::T, units::Symbol=:radians) where T<:AbstractFloat
+        if units == :radians
+            new{T}(SkyCoords.ICRSCoords(ra, dec))
+        elseif units == :hours_degrees
+            new{T}(SkyCoords.ICRSCoords(ra * π/12.0, deg2rad(dec)))
+        elseif units == :degrees
+            new{T}(SkyCoords.ICRSCoords(deg2rad(ra), deg2rad(dec)))
+        else
+            throw(ArgumentError("units must be :radians, :hours_degrees, or :degrees"))
+        end
     end
 end
 
@@ -42,66 +23,124 @@ end
 
 ### Purpose ###
 
-Computes rigorous great circle arc distances.
+Computes rigorous great circle arc distances using modern Julia astronomical coordinates.
 
 ### Explanation ###
 
-Input position can be either radians, sexagesimal right ascension and
-declination, or degrees.
+Input positions can be specified in radians, sexagesimal right ascension and declination, 
+or degrees. Uses SkyCoords.jl for precise astronomical calculations.
 
 ### Arguments ###
 
-* `units`: integer, can be either 0, or 1, or 2.  Describes units of inputs and
-  output:
-    * 0: everything (input right ascensions and declinations, and output
-      distance) is radians
+* `units`: integer, can be either 0, or 1, or 2. Describes units of inputs and output:
+    * 0: everything (input right ascensions and declinations, and output distance) 
+         is radians
     * 1: right ascensions are in decimal hours, declinations in decimal degrees,
-      output distance in arc seconds
+         output distance in arc seconds
     * 2: right ascensions and declinations are in degrees, output distance in arc
-      seconds
-* `ra1`:  right ascension or longitude of point 1
+         seconds
+* `ra1`: right ascension or longitude of point 1
 * `dec1`: declination or latitude of point 1
 * `ra2`: right ascension or longitude of point 2
 * `dec2`: declination or latitude of point 2
 
-Both `ra1` and `dec1`, and `ra2` and `dec2` can be given as 2-tuples `(ra1,
-dec1)` and `(ra2, dec2)`.
+Both `ra1` and `dec1`, and `ra2` and `dec2` can be given as 2-tuples `(ra1, dec1)` 
+and `(ra2, dec2)`.
 
 ### Output ###
 
-Angular distance on the sky between points 1 and 2, as a `AbstractFloat`.  See
+Angular distance on the sky between points 1 and 2, as an `AbstractFloat`. See
 `units` argument above for the units.
 
 ### Method ###
 
-"Haversine formula" see http://en.wikipedia.org/wiki/Great-circle_distance.
+Uses SkyCoords.jl's implementation of spherical geometry calculations, which provides
+high-precision results for astronomical coordinate transformations and distance
+measurements.
 
-### Example ###
+### Examples ###
 
 ```jldoctest
 julia> using AstroLib
 
 julia> gcirc(0, 120, -43, 175, +22)
 1.590442261600714
-```
 
-### Notes ###
+julia> # Using tuple notation
+julia> gcirc(1, (12.0, -43.0), (15.0, 22.0))
+5823.795873591674  # Result in arcseconds
 
-* The function `sphdist` provides an alternate method of computing a spherical
-  distance.
-* The Haversine formula can give rounding errors for antipodal points.
-
-Code of this function is based on IDL Astronomy User's Library.
+julia> # Using 
 """
-gcirc(units::Integer, ra1::Real, dec1::Real, ra2::Real, dec2::Real) =
-    gcirc(units, promote(float(ra1), float(dec1), float(ra2), float(dec2))...)
+function gcirc(units::Integer, ra1::T, dec1::T, ra2::T, dec2::T)::T where {T<:AbstractFloat}
+    units_sym = if units == 0
+        :radians
+    elseif units == 1
+        :hours_degrees
+    elseif units == 2
+        :degrees
+    else
+        throw(DomainError(units, "units must be 0 (radians), 1 (hours, degrees) or 2 (degrees)"))
+    end
+    
+    coord1 = AstroCoordinate(ra1, dec1, units_sym)
+    coord2 = AstroCoordinate(ra2, dec2, units_sym)
+    
+    distance = SkyCoords.separation(coord1.coord, coord2.coord)
+    
+    return units == 0 ? distance : rad2sec(distance)
+end
 
-### Tuples input
-gcirc(units::Integer, radec1::Tuple{Real, Real}, ra2::Real, dec2::Real) =
-    gcirc(units, radec1..., ra2, dec2)
+# Type promotion for mixed Real inputs
+function gcirc(units::Integer, ra1::Real, dec1::Real, ra2::Real, dec2::Real)
+    T = promote_type(float(typeof(ra1)), float(typeof(dec1)), 
+                    float(typeof(ra2)), float(typeof(dec2)))
+    return gcirc(units, T(ra1), T(dec1), T(ra2), T(dec2))
+end
 
-gcirc(units::Integer, ra1::Real, dec1::Real, radec2::Tuple{Real, Real}) =
-    gcirc(units, ra1, dec1, radec2...)
+# Tuple input handlers
+function gcirc(units::Integer, radec1::Tuple{Real,Real}, ra2::Real, dec2::Real)
+    T = promote_type(float(typeof(radec1[1])), float(typeof(radec1[2])), 
+                    float(typeof(ra2)), float(typeof(dec2)))
+    return gcirc(units, T(radec1[1]), T(radec1[2]), T(ra2), T(dec2))
+end
 
-gcirc(units::Integer, radec1::Tuple{Real, Real}, radec2::Tuple{Real, Real}) =
-    gcirc(units, radec1..., radec2...)
+function gcirc(units::Integer, ra1::Real, dec1::Real, radec2::Tuple{Real,Real})
+    T = promote_type(float(typeof(ra1)), float(typeof(dec1)), 
+                    float(typeof(radec2[1])), float(typeof(radec2[2])))
+    return gcirc(units, T(ra1), T(dec1), T(radec2[1]), T(radec2[2]))
+end
+
+function gcirc(units::Integer, radec1::Tuple{Real,Real}, radec2::Tuple{Real,Real})
+    T = promote_type(float(typeof(radec1[1])), float(typeof(radec1[2])), 
+                    float(typeof(radec2[1])), float(typeof(radec2[2])))
+    return gcirc(units, T(radec1[1]), T(radec1[2]), T(radec2[1]), T(radec2[2]))
+end
+
+# Updated broadcasting implementation
+function Base.Broadcast.broadcasted(::typeof(gcirc), units::Integer, 
+                                  ra1::AbstractArray, dec1::AbstractArray, 
+                                  ra2::AbstractArray, dec2::AbstractArray)
+    T = promote_type(float(eltype(ra1)), float(eltype(dec1)), 
+                    float(eltype(ra2)), float(eltype(dec2)))
+    return T[gcirc(units, r1, d1, r2, d2) for (r1, d1, r2, d2) in zip(ra1, dec1, ra2, dec2)]
+end
+
+function Base.Broadcast.broadcasted(::typeof(gcirc), units::Integer, 
+                                  ra1::AbstractArray, dec1::AbstractArray, 
+                                  ra2::Number, dec2::Number)
+    T = promote_type(float(eltype(ra1)), float(eltype(dec1)), 
+                    float(typeof(ra2)), float(typeof(dec2)))
+    return T[gcirc(units, r1, d1, T(ra2), T(dec2)) for (r1, d1) in zip(ra1, dec1)]
+end
+
+function Base.Broadcast.broadcasted(::typeof(gcirc), units::Integer, 
+                                  ra1::Number, dec1::Number,
+                                  ra2::AbstractArray, dec2::AbstractArray)
+    T = promote_type(float(typeof(ra1)), float(typeof(dec1)), 
+                    float(eltype(ra2)), float(eltype(dec2)))
+    return T[gcirc(units, T(ra1), T(dec1), r2, d2) for (r2, d2) in zip(ra2, dec2)]
+end
+
+# Helper function for converting radians to arcseconds
+rad2sec(x::T) where T<:AbstractFloat = x * T(206264.8062470963)

@@ -77,7 +77,7 @@ include("get_juldate.jl")
 export get_juldate
 
 include("gcirc.jl")
-export gcirc
+export AstroCoordinate, gcirc
 
 include("hadec2altaz.jl")
 export hadec2altaz
