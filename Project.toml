@@ -8,19 +8,17 @@ Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
-AstroAngles = "5c4adb95-c1fc-4c53-b4ea-2a94080c53d2"
 SkyCoords = "fc659fc5-75a3-5475-a2ea-3da92c065361"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
-AstroAngles = "0.1.4"
 DelimitedFiles = "1"
-SkyCoords = "1.0"
+SkyCoords = "1.5.1"
 StaticArrays = "1.0"
-Unitful = "~1.0"  # Changed to use approximate version
-UnitfulAstro = "~1.0"  # Changed to use approximate version
+Unitful = "1.22.0"
+UnitfulAstro = "1.2.2"
 julia = "1"
 
 [extras]
