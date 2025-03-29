@@ -10,10 +10,15 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 SkyCoords = "fc659fc5-75a3-5475-a2ea-3da92c065361"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
 DelimitedFiles = "1"
+SkyCoords = "1"
 StaticArrays = "0.5, 0.6, 0.7, 0.8, 0.9, 0.10, 0.11, 0.12, 1.0"
+Unitful = "1.22.0"
+UnitfulAstro = "1.2.2"
 julia = "1"
 
 [extras]
