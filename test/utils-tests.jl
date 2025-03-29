@@ -336,22 +336,19 @@ end
         get_date.([Date(2024), "2016-03-14"]) ==
         get_date.(["2024-01", DateTime(2016, 3, 14)]) == ["2024-01-01", "2016-03-14"]
 end
-
 @testset "gcirc" begin
     # Test AstroCoordinate constructor with invalid units
     @test_throws ArgumentError AstroCoordinate(1.0, 1.0, :invalid_units)
-    
-    # Original tests for basic functionality
     @test gcirc(0, 2.0, -0.75, 3.0, 0.4) ≈ 
-          SkyCoords.separation(
-              SkyCoords.ICRSCoords(2.0, -0.75),
-              SkyCoords.ICRSCoords(3.0, 0.4))
+        SkyCoords.separation(
+            SkyCoords.ICRSCoords(2.0, -0.75),
+            SkyCoords.ICRSCoords(3.0, 0.4))
     
     # Test AstroCoordinate constructor with all valid units
     @test isa(AstroCoordinate(1.0, 1.0, :radians), AstroCoordinate)
     @test isa(AstroCoordinate(1.0, 1.0, :hours_degrees), AstroCoordinate)
     @test isa(AstroCoordinate(1.0, 1.0, :degrees), AstroCoordinate)
-
+    
     ra1_hours, dec1_deg = 12.0, -43.0
     ra2_hours, dec2_deg = 15.0, 22.0
     result1 = gcirc(1, ra1_hours, dec1_deg, ra2_hours, dec2_deg)
@@ -359,7 +356,8 @@ end
         SkyCoords.ICRSCoords(ra1_hours * π/12.0, deg2rad(dec1_deg)),
         SkyCoords.ICRSCoords(ra2_hours * π/12.0, deg2rad(dec2_deg))))
     @test result1 ≈ expected1
-    @test gcirc.(0, [0,1,2], [1,2,3], [2,3,4], [3,4,5]) ≈
+    
+    @test gcirc.(0, [0,1,2], [1,2,3], [2,3,4], [3,4,5]) ≈ 
         [1.222450611061632, 2.500353926443337, 1.5892569925227757]
     
     @test @inferred(gcirc(0, 120, -43, 175, +22)) ≈ 1.590442261600714
@@ -373,8 +371,83 @@ end
     # Test error conditions
     @test_throws DomainError gcirc(3, 120.0, -43.0, 175.0, 22.0)
     @test_throws DomainError @inferred(gcirc(3, 0, 0, 0, 0))
+    
+    # Additional tests for edge cases
+    @test gcirc(0, 0.0, 0.0, 0.0, 0.0) ≈ 0.0
+    @test gcirc(0, π, 0.0, 0.0, 0.0) ≈ π
+    
+    # Test with mixed integer and float inputs
+    @test gcirc(0, 1, 2.0, 3, 4.0) isa Float64
+    @test gcirc(0, 1.0f0, 2.0f0, 3.0f0, 4.0f0) isa Float32
+    
+    # Test promotion with mixed types
+    @test gcirc(0, 1, 2, 3, 4) isa Float64
+    @test gcirc(0, Int8(1), Int16(2), Int32(3), Int64(4)) isa Float64
 end
 
+@testset "Unit-aware tests" begin
+    # Test with degrees
+    @test ustrip(gcirc(120.0u"°", -43.0u"°", 175.0u"°", 22.0u"°")) ≈ 1.590442261600714
+    
+    # Test with hours/degrees
+    @test ustrip(gcirc(12.0u"hr", -43.0u"°", 15.0u"hr", 22.0u"°")) ≈ 1.590442261600714
+    
+    # Test broadcasting
+    ras = [120.0, 130.0]u"°"
+    decs = [-43.0, -33.0]u"°"
+    @test all(ustrip.(gcirc.(ras, decs, 175.0u"°", 22.0u"°")) .≈ 
+        [1.590442261600714, 1.3089969389957472])
+    
+    # Test with radians
+    @test ustrip(gcirc(2.0u"rad", -0.75u"rad", 3.0u"rad", 0.4u"rad")) ≈ 
+        SkyCoords.separation(
+            SkyCoords.ICRSCoords(2.0, -0.75),
+            SkyCoords.ICRSCoords(3.0, 0.4))
+    
+    # Test with mixed units (should convert correctly)
+    @test ustrip(gcirc(2.0u"rad", -43.0u"°", 3.0u"rad", 22.0u"°")) ≈
+        SkyCoords.separation(
+            SkyCoords.ICRSCoords(2.0, deg2rad(-43.0)),
+            SkyCoords.ICRSCoords(3.0, deg2rad(22.0)))
+    
+    # Test with arcminutes and arcseconds
+    @test ustrip(gcirc(120.0u"°", -2580.0u"arcminute", 175.0u"°", 1320.0u"arcsecond")) ≈ 1.590442261600714
+    
+    # Test extreme cases with units
+    @test ustrip(gcirc(0.0u"°", 0.0u"°", 0.0u"°", 0.0u"°")) ≈ 0.0
+    @test ustrip(gcirc(180.0u"°", 0.0u"°", 0.0u"°", 0.0u"°")) ≈ π
+end
+
+@testset "AstroCoordinate constructors" begin
+    # Test basic constructors
+    coord1 = AstroCoordinate(1.0, 1.0)
+    @test coord1.coord.ra ≈ 1.0
+    @test coord1.coord.dec ≈ 1.0
+    
+    # Test hours_degrees constructor
+    coord2 = AstroCoordinate(12.0, 45.0, :hours_degrees)
+    @test coord2.coord.ra ≈ π
+    @test coord2.coord.dec ≈ deg2rad(45.0)
+    
+    # Test degrees constructor
+    coord3 = AstroCoordinate(90.0, 45.0, :degrees)
+    @test coord3.coord.ra ≈ deg2rad(90.0)
+    @test coord3.coord.dec ≈ deg2rad(45.0)
+    
+    # Test with quantities
+    coord4 = AstroCoordinate(90.0u"°", 45.0u"°")
+    @test coord4.coord.ra ≈ deg2rad(90.0)
+    @test coord4.coord.dec ≈ deg2rad(45.0)
+    
+    coord5 = AstroCoordinate(6.0u"hr", 45.0u"°")
+    @test coord5.coord.ra ≈ π/2
+    @test coord5.coord.dec ≈ deg2rad(45.0)
+    
+    # Test tuple constructor
+    coord6 = AstroCoordinate((90.0u"°", 45.0u"°"))
+    @test coord6.coord.ra ≈ deg2rad(90.0)
+    @test coord6.coord.dec ≈ deg2rad(45.0)
+end
 @testset "hadec2altaz" begin
     alt1, az1 = @inferred(hadec2altaz([0], [11.978165], [ten(43,4,42)]))
     @test alt1 ≈ [58.89983166666667]

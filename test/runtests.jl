@@ -5,6 +5,8 @@ using AstroLib
 using Test
 using Dates
 using SkyCoords
+using Unitful
+using UnitfulAstro
 #using Documenter
 
 @testset "AstroLib" begin
