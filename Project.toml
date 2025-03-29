@@ -16,7 +16,7 @@ UnitfulAstro = "6112ee07-acf9-5e0f-b108-d242c714bf9f"
 
 [compat]
 DelimitedFiles = "1"
-SkyCoords = "1.5.1"
+SkyCoords = "0.3.0, 0.4.0, 1.0.0-1.0.2, 1.1.0, 1.2.0, 1.3.0, 1.4.0, 1.5.0-1.5.1"
 StaticArrays = "0.5, 0.6, 0.7, 0.8, 0.9, 0.10, 0.11, 0.12, 1.0"
 Unitful = "1.22.0"
 UnitfulAstro = "1.2.2"
