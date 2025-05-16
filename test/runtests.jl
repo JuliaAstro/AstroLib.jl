@@ -1,12 +1,17 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
+using Aqua
 using AstroLib
 using Test
 using Dates
 using Documenter
 
 @testset "AstroLib" begin
+    @testset "Aqua.jl" begin
+        Aqua.test_all(AstroLib)
+    end
+
     include("utils-tests.jl")
     include("misc-tests.jl")
 
