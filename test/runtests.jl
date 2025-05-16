@@ -4,14 +4,14 @@
 using AstroLib
 using Test
 using Dates
-#using Documenter
+using Documenter
 
 @testset "AstroLib" begin
     include("utils-tests.jl")
     include("misc-tests.jl")
 
-    #DocMeta.setdocmeta!(AstroLib, :DocTestSetup, :(using AstroLib), recursive=true)
-    #doctest(AstroLib)
+    DocMeta.setdocmeta!(AstroLib, :DocTestSetup, :(using AstroLib), recursive=true)
+    doctest(AstroLib)
 end
 
 # Dummy calls to "show" for new data types, just to increase code coverage.
