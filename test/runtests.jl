@@ -16,7 +16,6 @@ using Documenter
     include("misc-tests.jl")
 
     DocMeta.setdocmeta!(AstroLib, :DocTestSetup, :(using AstroLib), recursive=true)
-    DocMeta.setdocmeta!(AstroLib, :DocTestFilters, r"(\d*)\.(\d{5})\d+" => s"\1.\2***", recursive=true)
     doctest(AstroLib)
 end
 
