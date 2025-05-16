@@ -4,7 +4,7 @@ include("pages.jl")
 
 DocMeta.setdocmeta!(AstroLib, :DocTestSetup, :(using AstroLib), recursive=true)
 
-makedocs(
+makedocs(;
     modules = [AstroLib],
     sitename = "AstroLib",
     format = Documenter.HTML(
@@ -14,9 +14,10 @@ makedocs(
             "assets/favicon.ico",
         ],
     ),
-    pages = pages,
+    pages,
 )
 
-deploydocs(
+deploydocs(;
     repo = "github.com/JuliaAstro/AstroLib.jl.git",
+    push_preview = true,
 )
