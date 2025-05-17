@@ -1,12 +1,14 @@
 name: CompatHelper
 on:
   schedule:
-    - cron: 0 23 * * *
+    - cron: 0 23 */5 * *
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   CompatHelper:
     runs-on: ubuntu-latest
     steps:
-
       - name: Install CompatHelper
         shell: julia --color=yes {0}
         run: using Pkg; Pkg.add("CompatHelper")
