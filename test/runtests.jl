@@ -15,7 +15,8 @@ using Documenter
     include("utils-tests.jl")
     include("misc-tests.jl")
 
-    if Sys.islinux()
+    isnightly = occursin("DEV", string(VERSION))
+    if Sys.islinux() && !isnightly
         DocMeta.setdocmeta!(AstroLib, :DocTestSetup, :(using AstroLib), recursive=true)
         doctest(AstroLib)
     end
