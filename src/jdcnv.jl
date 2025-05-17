@@ -49,5 +49,6 @@ equivalent to `jdcnv(now(Dates.UTC))`.
 
 For the conversion of Julian date to number of Julian days, use `juldate`.
 """
-const jdcnv = Dates.datetime2julian
+jdcnv(d::DateTime) = Dates.datetime2julian(d)
+jdcnv(d::AbstractString) = Dates.datetime2julian(Dates.DateTime(d))
 jdcnv(date...) = jdcnv(DateTime(date...))
