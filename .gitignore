@@ -8,4 +8,4 @@ _build
 /docs-rst/*.md
 /docs/build/
 /docs/site/
-/Manifest.toml
+Manifest.toml

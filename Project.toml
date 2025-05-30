@@ -1,7 +1,7 @@
 name = "AstroLib"
 uuid = "c7932e45-9af1-51e7-9da9-f004cd3a462b"
 authors = ["Mosè Giordano"]
-version = "0.4.2"
+version = "0.4.3"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
@@ -12,14 +12,10 @@ Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
+Dates = "1"
+DelimitedFiles = "1"
+LinearAlgebra = "1"
+Printf = "1"
 StaticArrays = "0.5, 0.6, 0.7, 0.8, 0.9, 0.10, 0.11, 0.12, 1.0"
 Interpolations = "0.13.4"
-julia = "1"
-
-[extras]
-Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]
+julia = "1.10"
