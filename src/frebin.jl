@@ -118,7 +118,7 @@ Shrink or expand the size of an array an arbitrary amount using interpolation
 
 The resized image is returned as the function result.
 
-### Example ###
+### Examples ###
 
 Suppose one has an 800 x 800 image array, im, that must be expanded to
 a size 850 x 900 while conserving the total counts. The pixel values are
@@ -129,13 +129,85 @@ julia> using AstroLib
 
 julia> image = [x+y for x in 1:800, y in 1:800];
 
-julia> image1 = frebin(image, 850, 900, total=true);
+julia> size(image)
+(800, 800)
 
 julia> sum(image)
 512640000
 
+julia> image1 = frebin(image, 850, 900, total=true);
+
+julia> size(image1)
+(850, 900)
+
 julia> sum(image1)
 5.126400000000241e8
+```
+
+If the new dimensions are integer ratios of the original
+dimensions, some optimizations can be performed.  We can
+also choose to preserve the *average* pixel value rather
+than the *total* pixel value in the image:
+
+```jldoctest
+julia> using AstroLib
+
+julia> image = [x+y for x in 1:800, y in 1:800];
+
+julia> size(image)
+(800, 800)
+
+julia> sum(image)/length(image)
+801.0
+
+julia> image1 = frebin(image, 400, 400, total=false);
+
+julia> size(image1)
+(400, 400)
+
+julia> sum(image1)/length(image1)
+801.0
+
+julia> image2 = frebin(image, 1600, 1600, total=false);
+
+julia> size(image2)
+(1600, 1600)
+
+julia> sum(image2)/length(image2)
+801.0
+```
+
+Of course, this works with 1D arrays as well:
+
+```jldoctest
+julia> using AstroLib
+
+julia> image = [x for x in 1:800];
+
+julia> size(image)
+(800,)
+
+julia> sum(image)
+320400
+
+julia> sum(image)/length(image)
+400.5
+
+julia> image1 = frebin(image, 1600);
+
+julia> size(image1)
+(1600,)
+
+julia> sum(image1)/length(image1)
+400.5
+
+julia> image2 = frebin(image, 410, total=true);
+
+julia> size(image2)
+(410,)
+
+julia> sum(image2)
+320400.00000000355
 ```
 
 ### Notes ###

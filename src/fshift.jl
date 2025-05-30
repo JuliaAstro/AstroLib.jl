@@ -8,14 +8,9 @@ function _fshift(image::AbstractArray{T}, Δx::T, Δy::T) where {T<:AbstractFloa
     inty = floor(Int, Δy)
     fracx = Δx - intx
     fracy = Δy - inty
-    if fracx < 0
-        fracx += 1
-        intx -= 1
-    end
-    if fracy < 0
-        fracy += 1
-        inty -= 1
-    end
+    # note: the idl version has branches checking if fracx and fracy are negative.
+    # these are not necessary here because we're using the floor function rather than
+    # a truncation of a float to an integer, so intx/y will always be <= Δx/y.
 
     # Shift by the integer portion
     s = circshift(image, (intx, inty))
@@ -70,6 +65,19 @@ julia> fshift(image, 0.5, 0.5)
  13.0   9.0  10.0  11.0  12.0  13.0  14.0  15.0  16.0  17.0
  14.0  10.0  11.0  12.0  13.0  14.0  15.0  16.0  17.0  18.0
  15.0  11.0  12.0  13.0  14.0  15.0  16.0  17.0  18.0  19.0
+
+julia> fshift(image, -3, -1)
+10×10 Matrix{Float64}:
+  6.0   7.0   8.0   9.0  10.0  11.0  12.0  13.0  14.0   5.0
+  7.0   8.0   9.0  10.0  11.0  12.0  13.0  14.0  15.0   6.0
+  8.0   9.0  10.0  11.0  12.0  13.0  14.0  15.0  16.0   7.0
+  9.0  10.0  11.0  12.0  13.0  14.0  15.0  16.0  17.0   8.0
+ 10.0  11.0  12.0  13.0  14.0  15.0  16.0  17.0  18.0   9.0
+ 11.0  12.0  13.0  14.0  15.0  16.0  17.0  18.0  19.0  10.0
+ 12.0  13.0  14.0  15.0  16.0  17.0  18.0  19.0  20.0  11.0
+  3.0   4.0   5.0   6.0   7.0   8.0   9.0  10.0  11.0   2.0
+  4.0   5.0   6.0   7.0   8.0   9.0  10.0  11.0  12.0   3.0
+  5.0   6.0   7.0   8.0   9.0  10.0  11.0  12.0  13.0   4.0
 ```
 
 ### History ###
