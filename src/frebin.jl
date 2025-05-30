@@ -140,8 +140,8 @@ julia> image1 = frebin(image, 850, 900, total=true);
 julia> size(image1)
 (850, 900)
 
-julia> sum(image1)
-5.126400000000241e8
+julia> sum(image1) ≈ sum(image)
+true
 ```
 
 If the new dimensions are integer ratios of the original
@@ -165,16 +165,16 @@ julia> image1 = frebin(image, 400, 400, total=false);
 julia> size(image1)
 (400, 400)
 
-julia> sum(image1)/length(image1)
-801.0
+julia> (sum(image1)/length(image1)) ≈ (sum(image)/length(image))
+true
 
 julia> image2 = frebin(image, 1600, 1600, total=false);
 
 julia> size(image2)
 (1600, 1600)
 
-julia> sum(image2)/length(image2)
-801.0
+julia> (sum(image2)/length(image2)) ≈ (sum(image)/length(image))
+true
 ```
 
 Of course, this works with 1D arrays as well:
@@ -198,16 +198,16 @@ julia> image1 = frebin(image, 1600);
 julia> size(image1)
 (1600,)
 
-julia> sum(image1)/length(image1)
-400.5
+julia> (sum(image1)/length(image1)) ≈ (sum(image)/length(image))
+true
 
 julia> image2 = frebin(image, 410, total=true);
 
 julia> size(image2)
 (410,)
 
-julia> sum(image2)
-320400.00000000355
+julia> sum(image2) ≈ sum(image)
+true
 ```
 
 ### Notes ###
