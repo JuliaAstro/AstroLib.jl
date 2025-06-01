@@ -1,0 +1,11 @@
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+.juliahistory
+_build
+*.elc
+*~
+/docs-rst/*.md
+/docs/build/
+/docs/site/
+/deps/NP.xy
