@@ -1,5 +1,11 @@
 # History of AstroLib.jl
 
+## v0.4.4 (2025-05-31)
+
+### Added
+
+* `frebin()` and `fshift()` functions. ([PR #87](https://github.com/JuliaAstro/AstroLib.jl/pull/87), [@Michael-Reefe](https://github.com/Michael-Reefe))
+
 ## v0.4.1 (2021-06-03)
 
 ### Bug Fixes
