@@ -223,7 +223,7 @@ author is Mosè Giordano.
 [docs-dev-url]: http://juliaastro.github.io/AstroLib.jl/dev/
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: http://juliaastro.github.io/AstroLib.jl/stable/
+[docs-stable-url]: https://juliaastro.github.io/AstroLib/stable/
 
 [pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/A/AstroLib.svg
 [pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html
