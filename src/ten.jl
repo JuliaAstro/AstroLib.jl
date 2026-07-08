@@ -2,10 +2,10 @@
 # Copyright (C) 2016 Mosè Giordano.
 
 # TODO: give sense to "-0" ("-0" is bitwise equal to "0").
-ten(degrees::T, minutes::T, seconds::T) where {T<:AbstractFloat} =
-    copysign(1, degrees)*(abs(degrees) + minutes/60 + seconds/3600)
+ten(degrees::T, minutes::T, seconds::T) where {T <: AbstractFloat} =
+    copysign(1, degrees) * (abs(degrees) + minutes / 60 + seconds / 3600)
 
-ten(d::Real, m::Real=0, s::Real=0) =
+ten(d::Real, m::Real = 0, s::Real = 0) =
     ten(promote(float(d), float(m), float(s))...)
 
 # TODO: improve performance, if possible.  There are a couple of slow tests to
@@ -14,12 +14,14 @@ function ten(strng::AbstractString)
     # Convert strings into numbers, empty strings into 0s.
     # Replace in the string multiple spaces or colons with a single space, strip leading
     # whitespaces, and split the resulting string using the space as separator.
-    tmp = map(x-> x=="" ? 0.0 : parse(Float64, x),
-              split(lstrip(replace(strng, r"(\:| )+" => s" ")), " "))
+    tmp = map(
+        x -> x == "" ? 0.0 : parse(Float64, x),
+        split(lstrip(replace(strng, r"(\:| )+" => s" ")), " ")
+    )
     # Concatenate "tmp" with 3 zeros, so that "angle" has at least 3 elements
     # also with an empty string in input.
     angle = vcat(tmp, zeros(Float64, 3))::Vector{Float64}
-    ten(angle[1], angle[2], angle[3])
+    return ten(angle[1], angle[2], angle[3])
 end
 
 ten(itr) = ten(itr...)

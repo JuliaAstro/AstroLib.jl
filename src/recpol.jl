@@ -1,7 +1,7 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _recpol(x::T, y::T, degrees::Bool) where {T<:AbstractFloat}
+function _recpol(x::T, y::T, degrees::Bool) where {T <: AbstractFloat}
     if degrees
         return hypot(x, y), atand(y, x)
     else
@@ -55,14 +55,14 @@ julia> r, phi = recpol(2.24, -1.87)
 Angle ``φ`` is given in radians.
 
 """
-recpol(x::Real, y::Real; degrees::Bool=false) =
+recpol(x::Real, y::Real; degrees::Bool = false) =
     _recpol(promote(float(x), float(y))..., degrees)
 
-recpol(xy::Tuple{Real, Real}; degrees::Bool=false) =
-    recpol(xy..., degrees=degrees)
+recpol(xy::Tuple{Real, Real}; degrees::Bool = false) = recpol(xy...; degrees)
 
-function recpol(x::AbstractArray{X}, y::AbstractArray{Y};
-                degrees::Bool=false) where {X<:Real, Y<:Real}
+function recpol(
+        x::AbstractArray{X}, y::AbstractArray{Y}; degrees::Bool = false
+    ) where {X <: Real, Y <: Real}
     if length(x) != length(y)
         throw(DimensionMismatch("x and y arrays must have the same length"))
     end
@@ -70,7 +70,7 @@ function recpol(x::AbstractArray{X}, y::AbstractArray{Y};
     r = similar(x, typex)
     a = similar(x, typex)
     for i in eachindex(x)
-        r[i], a[i] = recpol(x[i], y[i], degrees=degrees)
+        r[i], a[i] = recpol(x[i], y[i]; degrees)
     end
     return r, a
 end

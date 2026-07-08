@@ -3,11 +3,11 @@
 
 function vactoair(wave_vac::AbstractFloat)
     if wave_vac >= 2000
-        sigma2 = (1e4/wave_vac)^2  # Convert to wavenumber squared
+        sigma2 = (1.0e4 / wave_vac)^2  # Convert to wavenumber squared
         # Computer conversion factor.
-        fact = 1 + 5.792105e-2/(238.0185 - sigma2) +
-            1.67917e-3/(57.362 - sigma2)
-        return wave_vac/fact # Convert wavelength
+        fact = 1 + 5.792105e-2 / (238.0185 - sigma2) +
+            1.67917e-3 / (57.362 - sigma2)
+        return wave_vac / fact # Convert wavelength
     else
         return wave_vac
     end

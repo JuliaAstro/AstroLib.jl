@@ -1,24 +1,24 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function geo2geodetic(lat::T, long::T, alt::T, eqrad::T, polrad::T) where {T<:AbstractFloat}
-    e = sqrt(eqrad^2 - polrad^2)/eqrad
+function geo2geodetic(lat::T, long::T, alt::T, eqrad::T, polrad::T) where {T <: AbstractFloat}
+    e = sqrt(eqrad^2 - polrad^2) / eqrad
     sin_lat, cos_lat = sincos(deg2rad(lat))
     sin_long_rad, cos_long_rad = sincos(deg2rad(long))
     x = (eqrad + alt) * cos_lat * cos_long_rad
     y = (eqrad + alt) * cos_lat * sin_long_rad
     z = (eqrad + alt) * sin_lat
     r = hypot(x, y)
-    s    = hypot(r, z)*(1 - eqrad*sqrt((1 - e^2)/((1 - e^2)*r^2 + z^2)))
-    t0   = 1 + s*sqrt(1 - (e*z)^2/(r^2 + z^2))/eqrad
-    dzeta1 = z*t0
-    xi1  = r*(t0 - e^2)
+    s = hypot(r, z) * (1 - eqrad * sqrt((1 - e^2) / ((1 - e^2) * r^2 + z^2)))
+    t0 = 1 + s * sqrt(1 - (e * z)^2 / (r^2 + z^2)) / eqrad
+    dzeta1 = z * t0
+    xi1 = r * (t0 - e^2)
     rho1 = hypot(xi1, dzeta1)
-    c1   = xi1/rho1
-    s1   = dzeta1/rho1
-    b1   = eqrad/sqrt(1 - (e*s1)^2)
-    u1   = b1*c1
-    w1   = b1*s1*(1 - e^2)
+    c1 = xi1 / rho1
+    s1 = dzeta1 / rho1
+    b1 = eqrad / sqrt(1 - (e * s1)^2)
+    u1 = b1 * c1
+    w1 = b1 * s1 * (1 - e^2)
     return rad2deg(atan(s1, c1)), long, hypot(r - u1, z - w1)
 end
 
@@ -149,23 +149,24 @@ julia> collect(geodetic2geo(geo2geodetic(67.2, 13.4, 1.2))) - [67.2, 13.4, 1.2]
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-geo2geodetic(lat::Real, long::Real, alt::Real, eq::Real, pol::Real) =
-    geo2geodetic(promote(float(lat), float(long), float(alt),
-                          float(eq), float(pol))...)
+geo2geodetic(lat::Real, long::Real, alt::Real, eq::Real, pol::Real) = geo2geodetic(
+    promote(float(lat), float(long), float(alt), float(eq), float(pol))...
+)
 
 geo2geodetic(lla::Tuple{Real, Real, Real}, eq::Real, pol::Real) =
     geo2geodetic(lla..., eq, pol)
 
-function geo2geodetic(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
-                      alt::AbstractArray{<:Real},
-                      eq::Real, pol::Real) where {LA<:Real}
+function geo2geodetic(
+        lat::AbstractArray{LA}, long::AbstractArray{<:Real},
+        alt::AbstractArray{<:Real}, eq::Real, pol::Real
+    ) where {LA <: Real}
     if !(length(lat) == length(long) == length(alt))
         throw(DimensionMismatch("lat, long, and alt arrays must have the same length"))
     end
-    typela  = float(LA)
-    outlat  = similar(lat, typela)
+    typela = float(LA)
+    outlat = similar(lat, typela)
     outlong = similar(lat, typela)
-    outalt  = similar(lat, typela)
+    outalt = similar(lat, typela)
     for i in eachindex(lat)
         outlat[i], outlong[i], outalt[i] =
             geo2geodetic(lat[i], long[i], alt[i], eq, pol)
@@ -174,24 +175,28 @@ function geo2geodetic(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
 end
 
 ##### Select a planet.
-geo2geodetic(lat::Real, long::Real, alt::Real, planet::AbstractString="earth") =
-    (planet = lowercase(strip(planet));
-     geo2geodetic(lat, long, alt, planets[planet].eqradius*1e-3,
-                  planets[planet].polradius*1e-3))
+geo2geodetic(lat::Real, long::Real, alt::Real, planet::AbstractString = "earth") = (
+    planet = lowercase(strip(planet));
+    geo2geodetic(
+        lat, long, alt, planets[planet].eqradius * 1.0e-3,
+        planets[planet].polradius * 1.0e-3
+    )
+)
 
-geo2geodetic(lla::Tuple{Real, Real, Real}, planet::AbstractString="earth") =
+geo2geodetic(lla::Tuple{Real, Real, Real}, planet::AbstractString = "earth") =
     geo2geodetic(lla..., planet)
 
-function geo2geodetic(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
-                      alt::AbstractArray{<:Real},
-                      planet::AbstractString="earth") where {LA<:Real}
+function geo2geodetic(
+        lat::AbstractArray{LA}, long::AbstractArray{<:Real},
+        alt::AbstractArray{<:Real}, planet::AbstractString = "earth"
+    ) where {LA <: Real}
     if !(length(lat) == length(long) == length(alt))
         throw(DimensionMismatch("lat, long, and alt arrays must have the same length"))
     end
-    typela  = float(LA)
-    outlat  = similar(lat, typela)
+    typela = float(LA)
+    outlat = similar(lat, typela)
     outlong = similar(lat, typela)
-    outalt  = similar(lat, typela)
+    outalt = similar(lat, typela)
     for i in eachindex(lat)
         outlat[i], outlong[i], outalt[i] =
             geo2geodetic(lat[i], long[i], alt[i], planet)

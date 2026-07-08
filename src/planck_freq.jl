@@ -1,10 +1,10 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function planck_freq(frequency::T, temperature::T) where {T<:AbstractFloat}
-    c1  = 1.47449944028424e-50 # = 2*h/c*c
-    c2  = 4.79924466221135e-11 # = h/k
-    return c1*frequency^3/expm1(c2*frequency/temperature)
+function planck_freq(frequency::T, temperature::T) where {T <: AbstractFloat}
+    c1 = 1.47449944028424e-50 # = 2*h/c*c
+    c2 = 4.79924466221135e-11 # = h/k
+    return c1 * frequency^3 / expm1(c2 * frequency / temperature)
 end
 
 """

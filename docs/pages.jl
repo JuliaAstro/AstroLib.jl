@@ -1,4 +1,4 @@
 pages = [
-    "Introduction"  => "index.md",
-    "Reference"     => "ref.md",
+    "Introduction" => "index.md",
+    "Reference" => "ref.md",
 ]

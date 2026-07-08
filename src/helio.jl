@@ -2,30 +2,34 @@
 
 # dpdt gives the time rate of change of the mean orbital quantities
 # dpdt elements taken from https://ssd.jpl.nasa.gov/txt/p_elem_t1.txt
-const dpd = @SMatrix [ 0.00000037  0.00001906 -0.00594749 -0.12534081  0.16047689 149472.67411175;
-                       0.00000390 -0.00004107 -0.00078890 -0.27769418  0.00268329  58517.81538729;
-                       0.00000562 -0.00004392 -0.01294668  0.0         0.32327364  35999.37244981;
-                       0.00001847  0.00007882 -0.00813131 -0.29257343  0.44441088  19140.30268499;
-                      -0.00011607 -0.00013253 -0.00183714  0.20469106  0.21252668   3034.74612775;
-                      -0.00125060 -0.00050991  0.00193609 -0.28867794 -0.41897216   1222.49362201;
-                      -0.00196176 -0.00004397 -0.00242939  0.04240589  0.40805281    428.48202785;
-                       0.00026291  0.00005105  0.00035372 -0.00508664 -0.32241464    218.45945325;
-                      -0.00031596  0.00005170  0.00004818 -0.01183482 -0.04062942    145.20780515]
+const dpd = @SMatrix [
+     0.00000037  0.00001906 -0.00594749 -0.12534081  0.16047689 149472.67411175;
+     0.00000390 -0.00004107 -0.00078890 -0.27769418  0.00268329  58517.81538729;
+     0.00000562 -0.00004392 -0.01294668  0.0         0.32327364  35999.37244981;
+     0.00001847  0.00007882 -0.00813131 -0.29257343  0.44441088  19140.30268499;
+    -0.00011607 -0.00013253 -0.00183714  0.20469106  0.21252668   3034.74612775;
+    -0.00125060 -0.00050991  0.00193609 -0.28867794 -0.41897216   1222.49362201;
+    -0.00196176 -0.00004397 -0.00242939  0.04240589  0.40805281    428.48202785;
+     0.00026291  0.00005105  0.00035372 -0.00508664 -0.32241464    218.45945325;
+    -0.00031596  0.00005170  0.00004818 -0.01183482 -0.04062942    145.20780515
+]
 
-const record = Dict(1=>"mercury", 2=>"venus", 3=>"earth", 4=>"mars", 5=>"jupiter",
-                    6=>"saturn", 7=>"uranus", 8=>"neptune", 9=>"pluto")
+const record = Dict(
+    1 => "mercury", 2 => "venus", 3 => "earth", 4 => "mars", 5 => "jupiter",
+    6 => "saturn", 7 => "uranus", 8 => "neptune", 9 => "pluto"
+)
 
-function _helio(jd::T, num::Integer, radians::Bool) where {T<:AbstractFloat}
+function _helio(jd::T, num::Integer, radians::Bool) where {T <: AbstractFloat}
 
-    if num<1 || num>9
+    if num < 1 || num > 9
         throw(DomainError(num, "Input should be an integer in the range 1:9 denoting planet number"))
     end
     t = (jd - J2000) / JULIANCENTURY
     body = record[num]
     dpdt = dpd .* t
-    a = planets[body].axis/AU + dpdt[num, 1]
+    a = planets[body].axis / AU + dpdt[num, 1]
     eccen = planets[body].ecc + dpdt[num, 2]
-    n = deg2rad(0.9856076686 / (a * sqrt(a) ))
+    n = deg2rad(0.9856076686 / (a * sqrt(a)))
     inc = deg2rad(planets[body].inc + dpdt[num, 3])
     along = deg2rad(planets[body].asc_long + dpdt[num, 4])
     plong = deg2rad(planets[body].per_long + dpdt[num, 5])
@@ -110,18 +114,18 @@ of the supplied date.
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-helio(jd::Real, num::Integer, radians::Bool=false) =
-    _helio(float(jd), num, radians)
+helio(jd::Real, num::Integer, radians::Bool = false) = _helio(float(jd), num, radians)
 
-function helio(jd::AbstractVector{P}, num::AbstractVector{<:Real},
-               radians::Bool = false) where {P<:Real}
+function helio(
+        jd::AbstractVector{P}, num::AbstractVector{<:Real}, radians::Bool = false
+    ) where {P <: Real}
     if length(jd) != length(num)
         throw(DimensionMismatch("jd and num vectors should be of the same length"))
     end
     typejd = float(P)
-    hrad_out = similar(jd,  typejd)
-    hlong_out = similar(jd,  typejd)
-    hlat_out = similar(jd,  typejd)
+    hrad_out = similar(jd, typejd)
+    hlong_out = similar(jd, typejd)
+    hlat_out = similar(jd, typejd)
     for i in eachindex(jd)
         hrad_out[i], hlong_out[i], hlat_out[i] = helio(jd[i], num[i], radians)
     end

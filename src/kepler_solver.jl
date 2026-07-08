@@ -13,7 +13,7 @@ function kepler_solver(_M::Real, e::Real)
     end
     pi2 = abs2(T(pi))
     # equation (20)
-    α = (3 * pi2 + 8 * (pi2 - pi * abs(M)) / (5 * (1 + e)))/(pi2 - 6)
+    α = (3 * pi2 + 8 * (pi2 - pi * abs(M)) / (5 * (1 + e))) / (pi2 - 6)
     # equation (5)
     d = 3 * (1 - e) + α * e
     # equation (9)
@@ -23,7 +23,7 @@ function kepler_solver(_M::Real, e::Real)
     # equation (14)
     w = cbrt(abs2(abs(r) + sqrt(q * q * q + r * r)))
     # equation (15)
-    E1 = (2 * r * w / @evalpoly(w, q * q, q, 1) + M)/d
+    E1 = (2 * r * w / @evalpoly(w, q * q, q, 1) + M) / d
     # equation (26) & equation (27)
     f2, f3 = e .* sincos(E1)
     # equation (21)

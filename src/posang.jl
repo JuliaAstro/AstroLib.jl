@@ -1,31 +1,34 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function posang(units::Integer, ra1::T, dec1::T, ra2::T, dec2::T) where {T<:AbstractFloat}
+function posang(units::Integer, ra1::T, dec1::T, ra2::T, dec2::T) where {T <: AbstractFloat}
     # Convert all quantities to radians.
     if units == 0
         # All radians
-        ra1_rad  = ra1
-        ra2_rad  = ra2
+        ra1_rad = ra1
+        ra2_rad = ra2
         dec1_rad = dec1
         dec2_rad = dec2
     elseif units == 1
         # Right ascensions are in hours, declinations in degrees.
-        ra1_rad  = ra1*pi/12
-        ra2_rad  = ra2*pi/12
+        ra1_rad = ra1 * pi / 12
+        ra2_rad = ra2 * pi / 12
         dec1_rad = deg2rad(dec1)
         dec2_rad = deg2rad(dec2)
     elseif units == 2
         # Right ascensions and declinations are in degrees.
-        ra1_rad  = deg2rad(ra1)
-        ra2_rad  = deg2rad(ra2)
+        ra1_rad = deg2rad(ra1)
+        ra2_rad = deg2rad(ra2)
         dec1_rad = deg2rad(dec1)
         dec2_rad = deg2rad(dec2)
     else
         # In any other case throw an error.
-        throw(DomainError(
-            units,
-            "units must be 0 (radians), 1 (hours, degrees) or 2 (degrees)"))
+        throw(
+            DomainError(
+                units,
+                "units must be 0 (radians), 1 (hours, degrees) or 2 (degrees)"
+            )
+        )
     end
     sin_radif, cos_radif = sincos(ra2_rad - ra1_rad)
     sin_dec1, cos_dec1 = sincos(dec1_rad)

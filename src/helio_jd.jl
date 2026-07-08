@@ -1,7 +1,7 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _helio_jd(date::T, ra::T, dec::T, B1950::Bool, diff::Bool) where {T<:AbstractFloat}
+function _helio_jd(date::T, ra::T, dec::T, B1950::Bool, diff::Bool) where {T <: AbstractFloat}
     # Because `xyz' uses default B1950 coordinates, we'll convert everything to
     # B1950.
     if ! B1950
@@ -9,12 +9,14 @@ function _helio_jd(date::T, ra::T, dec::T, B1950::Bool, diff::Bool) where {T<:Ab
     end
     delta_t = (date - 33282.42345905) / JULIANCENTURY
     epsilon_sec = @evalpoly(delta_t, 44.836, -46.8495, -0.00429, 0.00181)
-    epsilon = deg2rad(23.433333 + epsilon_sec/3600)
+    epsilon = deg2rad(23.433333 + epsilon_sec / 3600)
     sin_ra, cos_ra = sincos(deg2rad(ra))
     sin_dec, cos_dec = sincos(deg2rad(dec))
     x, y, z = xyz(date)
-    time = -499.00522*(cos_dec * cos_ra * x +
-                       (tan(epsilon) * sin_dec + cos_dec * sin_ra) * y)
+    time = -499.00522 * (
+        cos_dec * cos_ra * x +
+            (tan(epsilon) * sin_dec + cos_dec * sin_ra) * y
+    )
     if diff
         return time
     else
@@ -95,7 +97,6 @@ http://star-www.rl.ac.uk/).
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-helio_jd(date::Real, ra::Real, dec::Real;
-         B1950::Bool=false, diff::Bool=false) =
-             _helio_jd(promote(float(date), float(ra), float(dec))...,
-                       B1950, diff)
+helio_jd(
+    date::Real, ra::Real, dec::Real; B1950::Bool = false, diff::Bool = false
+) = _helio_jd(promote(float(date), float(ra), float(dec))..., B1950, diff)

@@ -1,31 +1,49 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _premat(equinox1::T, equinox2::T, FK4::Bool) where {T<:AbstractFloat}
+function _premat(equinox1::T, equinox2::T, FK4::Bool) where {T <: AbstractFloat}
     t = (equinox2 - equinox1) / 1000
     if FK4
         st = (equinox1 - 1900) / 1000
         #  Compute 3 rotation angles
-        a = sec2rad(t*(23042.53 + st*(139.75 + 0.06*st)
-                       + t*(30.23 - 0.27*st + 18.0*t)))
-        b = sec2rad(t*t*(79.27 + 0.66*st + 0.32*t)) + a
-        c = sec2rad(t*(20046.85 - st*(85.33 + 0.37*st)
-                       + t*(-42.67 - 0.37*st -41.8*t)))
+        a = sec2rad(
+            t * (
+                23042.53 + st * (139.75 + 0.06 * st)
+                    + t * (30.23 - 0.27 * st + 18.0 * t)
+            )
+        )
+        b = sec2rad(t * t * (79.27 + 0.66 * st + 0.32 * t)) + a
+        c = sec2rad(
+            t * (
+                20046.85 - st * (85.33 + 0.37 * st)
+                    + t * (-42.67 - 0.37 * st - 41.8 * t)
+            )
+        )
     else
         st = (equinox1 / 1000) - 2
         # Compute 3 rotation angles
-        a = sec2rad(t *(23062.181 + st*(139.656 + 0.0139*st)
-                        + t*(30.188 - 0.344*st + 17.998*t)))
-        b = sec2rad(t*t*(79.280 + 0.410*st + 0.205*t)) + a
-        c = sec2rad(t*(20043.109 - st*(85.33 + 0.217*st)
-                       + t*(-42.665 - 0.217*st - 41.833*t)))
+        a = sec2rad(
+            t * (
+                23062.181 + st * (139.656 + 0.0139 * st)
+                    + t * (30.188 - 0.344 * st + 17.998 * t)
+            )
+        )
+        b = sec2rad(t * t * (79.28 + 0.41 * st + 0.205 * t)) + a
+        c = sec2rad(
+            t * (
+                20043.109 - st * (85.33 + 0.217 * st)
+                    + t * (-42.665 - 0.217 * st - 41.833 * t)
+            )
+        )
     end
     sa, ca = sincos(a)
     sb, cb = sincos(b)
     sc, cc = sincos(c)
-    return @SMatrix [ca * cb * cc - sa * sb   -ca * sb - sa * cb * cc   -cb*sc;
-                     sa * cb + ca * sb * cc    ca * cb - sa * sb * cc   -sb*sc;
-                     ca * sc                  -sa * sc                   cc]
+    return @SMatrix [
+        ca * cb * cc - sa * sb   -ca * sb - sa * cb * cc   -cb * sc;
+        sa * cb + ca * sb * cc    ca * cb - sa * sb * cc   -sb * sc;
+        ca * sc                  -sa * sc                   cc
+    ]
 end
 
 """
@@ -77,5 +95,5 @@ Almanac" 1992, page 104 Table 3.211.1
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-premat(eq1::Real, eq2::Real; FK4::Bool=false) =
+premat(eq1::Real, eq2::Real; FK4::Bool = false) =
     _premat(promote(float(eq1), float(eq2))..., FK4)

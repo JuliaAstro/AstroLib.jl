@@ -1,13 +1,13 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function geodetic2geo(lat::T, long::T, alt::T, eqrad::T, polrad::T) where {T<:AbstractFloat}
-    e = sqrt(eqrad^2 - polrad^2)/eqrad
+function geodetic2geo(lat::T, long::T, alt::T, eqrad::T, polrad::T) where {T <: AbstractFloat}
+    e = sqrt(eqrad^2 - polrad^2) / eqrad
     sin_lat, cos_lat = sincos(deg2rad(lat))
-    beta = sqrt(1 - (e * sin_lat) ^ 2)
+    beta = sqrt(1 - (e * sin_lat)^2)
     r = (eqrad / beta + alt) * cos_lat
-    z = (eqrad*(1 - e ^ 2) / beta + alt) * sin_lat
-    return rad2deg(atan(z,r)), long, hypot(r, z) - eqrad
+    z = (eqrad * (1 - e^2) / beta + alt) * sin_lat
+    return rad2deg(atan(z, r)), long, hypot(r, z) - eqrad
 end
 
 """
@@ -116,23 +116,24 @@ coordinates.
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-geodetic2geo(lat::Real, long::Real, alt::Real, eq::Real, pol::Real) =
-    geodetic2geo(promote(float(lat), float(long), float(alt),
-                         float(eq), float(pol))...)
+geodetic2geo(lat::Real, long::Real, alt::Real, eq::Real, pol::Real) = geodetic2geo(
+    promote(float(lat), float(long), float(alt), float(eq), float(pol))...
+)
 
 geodetic2geo(lla::Tuple{Real, Real, Real}, eq::Real, pol::Real) =
     geodetic2geo(lla..., eq, pol)
 
-function geodetic2geo(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
-                      alt::AbstractArray{<:Real}, eq::Real,
-                      pol::Real) where {LA<:Real}
+function geodetic2geo(
+        lat::AbstractArray{LA}, long::AbstractArray{<:Real},
+        alt::AbstractArray{<:Real}, eq::Real, pol::Real
+    ) where {LA <: Real}
     if !(length(lat) == length(long) == length(alt))
         throw(DimensionMismatch("lat, long, and alt arrays must have the same length"))
     end
-    typela  = float(LA)
-    outlat  = similar(lat, typela)
+    typela = float(LA)
+    outlat = similar(lat, typela)
     outlong = similar(lat, typela)
-    outalt  = similar(lat, typela)
+    outalt = similar(lat, typela)
     for i in eachindex(lat)
         outlat[i], outlong[i], outalt[i] =
             geodetic2geo(lat[i], long[i], alt[i], eq, pol)
@@ -141,25 +142,29 @@ function geodetic2geo(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
 end
 
 ##### Select a planet.
-geodetic2geo(lat::Real, long::Real, alt::Real, planet::AbstractString="earth") =
-    (planet = lowercase(strip(planet));
-     geodetic2geo(lat, long, alt, planets[planet].eqradius*1e-3,
-                  planets[planet].polradius*1e-3))
+geodetic2geo(lat::Real, long::Real, alt::Real, planet::AbstractString = "earth") = (
+    planet = lowercase(strip(planet));
+    geodetic2geo(
+        lat, long, alt, planets[planet].eqradius * 1.0e-3,
+        planets[planet].polradius * 1.0e-3
+    )
+)
 
-geodetic2geo(lla::Tuple{Real, Real, Real}, planet::AbstractString="earth") =
+geodetic2geo(lla::Tuple{Real, Real, Real}, planet::AbstractString = "earth") =
     geodetic2geo(lla..., planet)
 
-function geodetic2geo(lat::AbstractArray{LA},
-                      long::AbstractArray{<:Real},
-                      alt::AbstractArray{<:Real},
-                      planet::AbstractString="earth") where {LA<:Real}
+function geodetic2geo(
+        lat::AbstractArray{LA}, long::AbstractArray{<:Real},
+        alt::AbstractArray{<:Real},
+        planet::AbstractString = "earth"
+    ) where {LA <: Real}
     if !(length(lat) == length(long) == length(alt))
         throw(DimensionMismatch("lat, long, and alt arrays must have the same length"))
     end
-    typela  = float(LA)
-    outlat  = similar(lat, typela)
+    typela = float(LA)
+    outlat = similar(lat, typela)
     outlong = similar(lat, typela)
-    outalt  = similar(lat, typela)
+    outalt = similar(lat, typela)
     for i in eachindex(lat)
         outlat[i], outlong[i], outalt[i] =
             geodetic2geo(lat[i], long[i], alt[i], planet)

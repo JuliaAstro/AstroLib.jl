@@ -1,34 +1,32 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-const Mbprec =
-    SMatrix{6,6}(+0.9999256795,      -0.0111814828,      -0.0048590040,
-                 -0.000551,          -0.238560,          +0.435730,
-                 +0.0111814828,      +0.9999374849,      -0.0000271557,
-                 +0.238509,          -0.002667,          -0.008541,
-                 +0.0048590039,      -0.0000271771,      +0.9999881946,
-                 -0.435614,          +0.012254,          +0.002117,
-                 -0.00000242389840,  +0.00000002710544,  +0.00000001177742,
-                 +0.99990432,        -0.01118145,        -0.00485852,
-                 -0.00000002710544,  -0.00000242392702,  +0.00000000006585,
-                 +0.01118145,        +0.99991613,        -0.00002716,
-                 -0.00000001177742,  +0.00000000006585,  -0.00000242404995,
-                 +0.00485852,        -0.00002717,        +0.99996684)
+const Mbprec = @SMatrix[
+     0.9999256795  0.0111814828  0.0048590039 -2.4238984e-6 -2.710544e-8   -1.177742e-8
+    -0.0111814828  0.9999374849 -2.71771e-5    2.710544e-8  -2.42392702e-6  6.585e-11
+    -0.004859004  -2.71557e-5    0.9999881946  1.177742e-8   6.585e-11     -2.42404995e-6
+    -0.000551      0.238509     -0.435614      0.99990432    0.01118145     0.00485852
+    -0.23856      -0.002667      0.012254     -0.01118145    0.99991613    -2.717e-5
+     0.43573      -0.008541      0.002117     -0.00485852   -2.716e-5       0.99996684
+]
 
 # Note: IDL version of `bprecess' changes in-place "muradec", "parallax" and
 # "radvel".  We don't do anything like this, but calculations are below,
 # commented, in case someone is interested.
-function _bprecess(ra::T, dec::T, parallax::T, radvel::T,
-                   epoch::T, muradec::Vector{T}) where {T<:AbstractFloat}
+function _bprecess(
+        ra::T, dec::T, parallax::T, radvel::T, epoch::T, muradec::Vector{T}
+    ) where {T <: AbstractFloat}
     if length(muradec) != 2
         throw(DomainError(muradec, "muradec must have length 2"))
     end
-    sinra,  cosra  = sincos(deg2rad(ra))
+    sinra, cosra = sincos(deg2rad(ra))
     sindec, cosdec = sincos(deg2rad(dec))
-    r0 = SVector(cosra*cosdec,  sinra*cosdec,  sindec)
-    r0_dot = SVector(-muradec[1]*sinra*cosdec - muradec[2]*cosra*sindec,
-                     muradec[1]*cosra*cosdec - muradec[2]*sinra*sindec,
-                     muradec[2]*cosdec) .+ 21.095 .* radvel * parallax * r0
+    r0 = SVector(cosra * cosdec, sinra * cosdec, sindec)
+    r0_dot = SVector(
+        -muradec[1] * sinra * cosdec - muradec[2] * cosra * sindec,
+        muradec[1] * cosra * cosdec - muradec[2] * sinra * sindec,
+        muradec[2] * cosdec
+    ) .+ 21.095 .* radvel * parallax * r0
     R_1 = Mbprec * vcat(r0, r0_dot)
     r1 = R_1[1:3]
     if isfinite(epoch)
@@ -42,7 +40,7 @@ function _bprecess(ra::T, dec::T, parallax::T, radvel::T,
     s1 = r1 ./ rmag
     r = Array{T}(undef, 3)
     s = copy(s1)
-    for j = 0:2
+    for j in 0:2
         r .= s1 .+ A .- dot(s, A) .* s
         s .= r ./ rmag
     end
@@ -58,7 +56,7 @@ function _bprecess(ra::T, dec::T, parallax::T, radvel::T,
     # muradec[1] = (x*y_dot - y*x_dot)/(x*x + y*y)
     # muradec[2] = (z_dot*(x*x + y*y) - z*(x*x_dot + y*y_dot))/(rmag*rmag*hypot(x, y))
     dec1950 = asin(z / rmag)
-    ra1950  = atan(y, x)
+    ra1950 = atan(y, x)
     # if parallax > 0
     #     radvel = (x*x_dot + y*y_dot + z*z_dot)/(21.095*parallax*rmag)
     #     parallax = parallax / rmag
@@ -66,54 +64,68 @@ function _bprecess(ra::T, dec::T, parallax::T, radvel::T,
     if ra1950 < 0
         ra1950 += 2 * T(pi)
     end
-    ra1950  = rad2deg(ra1950)
+    ra1950 = rad2deg(ra1950)
     dec1950 = rad2deg(dec1950)
     return ra1950, dec1950
 end
 
 # Main interface.
-bprecess(ra::Real, dec::Real, muradec::Vector{<:Real}; parallax::Real=0.0, radvel::Real=0.0) =
-    _bprecess(promote(float(ra), float(dec), float(parallax), float(radvel), NaN)...,
-              float(muradec))
+bprecess(ra::Real, dec::Real, muradec::Vector{<:Real}; parallax::Real = 0.0, radvel::Real = 0.0) =
+    _bprecess(
+    promote(float(ra), float(dec), float(parallax), float(radvel), NaN)...,
+    float(muradec)
+)
 
-bprecess(ra::Real, dec::Real, epoch::Real=2000.0) =
-    _bprecess(promote(float(ra), float(dec), 0.0, 0.0, float(epoch))...,
-              zeros(typeof(float(ra)), 2))
+bprecess(ra::Real, dec::Real, epoch::Real = 2000.0) =
+    _bprecess(
+    promote(float(ra), float(dec), 0.0, 0.0, float(epoch))...,
+    zeros(typeof(float(ra)), 2)
+)
 
 # Tuple arguments.
-bprecess(radec::Tuple{Real,Real}, muradec::Vector{<:Real};
-         parallax::Real=0.0, radvel::Real=0.0) =
-             bprecess(radec..., muradec, parallax=parallax, radvel=radvel)
+bprecess(
+    radec::Tuple{Real, Real}, muradec::Vector{<:Real};
+    parallax::Real = 0.0, radvel::Real = 0.0
+) =
+    bprecess(radec..., muradec, parallax = parallax, radvel = radvel)
 
-bprecess(radec::Tuple{Real,Real}, epoch::Real=2000.0) =
+bprecess(radec::Tuple{Real, Real}, epoch::Real = 2000.0) =
     bprecess(radec..., epoch)
 
 # Vectorial arguments.
-function bprecess(ra::AbstractArray{R}, dec::AbstractArray{<:Real},
-                  muradec::AbstractArray{<:Real};
-                  parallax::AbstractArray{<:Real}=zeros(R, length(ra)),
-                  radvel::AbstractArray{<:Real}=zeros(R, length(ra))) where {R<:Real}
+function bprecess(
+        ra::AbstractArray{R}, dec::AbstractArray{<:Real},
+        muradec::AbstractArray{<:Real};
+        parallax::AbstractArray{<:Real} = zeros(R, length(ra)),
+        radvel::AbstractArray{<:Real} = zeros(R, length(ra))
+    ) where {R <: Real}
     if !(length(ra) == length(dec) == size(muradec, 2) == length(parallax) == length(radvel))
-        throw(DimensionMismatch(
-            "ra, dec, muradec[:,2], parallax, and radvel arrays should be of the same length"))
+        throw(
+            DimensionMismatch(
+                "ra, dec, muradec[:,2], parallax, and radvel arrays should be of the same length"
+            )
+        )
     end
     typer = float(R)
-    ra1950  = similar(ra, typer)
+    ra1950 = similar(ra, typer)
     dec1950 = similar(dec, typer)
     for i in eachindex(ra)
-        ra1950[i], dec1950[i] = bprecess(ra[i], dec[i], muradec[:,i],
-                                         parallax=parallax[i], radvel=radvel[i])
+        ra1950[i], dec1950[i] = bprecess(
+            ra[i], dec[i], muradec[:, i],
+            parallax = parallax[i], radvel = radvel[i]
+        )
     end
     return ra1950, dec1950
 end
 
-function bprecess(ra::AbstractArray{R}, dec::AbstractArray{D},
-                  epoch::Real=2000.0) where {R<:Real,D<:Real}
+function bprecess(
+        ra::AbstractArray{R}, dec::AbstractArray{D}, epoch::Real = 2000.0
+    ) where {R <: Real, D <: Real}
     if length(ra) != length(dec)
         throw(DimensionMismatch("ra and dec arrays should be of the same length"))
     end
     typer = float(R)
-    ra1950  = similar(ra, typer)
+    ra1950 = similar(ra, typer)
     dec1950 = similar(dec, typer)
     for i in eachindex(ra)
         ra1950[i], dec1950[i] = bprecess(ra[i], dec[i], epoch[i])

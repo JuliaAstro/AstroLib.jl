@@ -1,7 +1,7 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
 #TODO: Use full JPL ephemeris for high precision
-function _planet_coords(date::T, num::Integer) where {T<:AbstractFloat}
+function _planet_coords(date::T, num::Integer) where {T <: AbstractFloat}
     rad, long, lat = helio(date, num, true)
     rade, longe, late = helio(date, 3, true)
     sin_lat, cos_lat = sincos(lat)
@@ -11,8 +11,8 @@ function _planet_coords(date::T, num::Integer) where {T<:AbstractFloat}
     x = rad * cos_lat * cos_long - rade * cos_late * cos_longe
     y = rad * cos_lat * sin_long - rade * cos_late * sin_longe
     z = rad * sin_lat - rade * sin_late
-    lamda = rad2deg(atan(y,x))
-    beta = rad2deg(atan(z, hypot(x,y)))
+    lamda = rad2deg(atan(y, x))
+    beta = rad2deg(atan(z, hypot(x, y)))
     ra, dec = euler(lamda, beta, 4)
     return ra, dec
 end
@@ -65,13 +65,14 @@ Code of this function is based on IDL Astronomy User's Library.
 """
 planet_coords(date::Real, num::Integer) = _planet_coords(float(date), num)
 
-function planet_coords(date::AbstractVector{R},
-                       num::AbstractVector{<:Integer}) where {R<:Real}
+function planet_coords(
+        date::AbstractVector{R}, num::AbstractVector{<:Integer}
+    ) where {R <: Real}
     if length(date) != length(num)
         throw(DimensionMismatch("date and num arrays should be of the same length"))
     end
     typedate = float(R)
-    ra_out  = similar(date, typedate)
+    ra_out = similar(date, typedate)
     dec_out = similar(date, typedate)
     for i in eachindex(date)
         ra_out[i], dec_out[i] = planet_coords(date[i], num[i])

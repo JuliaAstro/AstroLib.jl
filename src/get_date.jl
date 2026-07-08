@@ -66,12 +66,12 @@ function get_date(dt::DateTime, old::Bool, timetag::Bool)
     y, m, d = Dates.yearmonthday(dt)
     h, mi, s = Dates.hour(dt), Dates.minute(dt), Dates.second(dt)
 
-    yy = lpad(y,4,"0") # here y is supposed to be positive.
-    mm = lpad(m,2,"0")
-    dd = lpad(d,2,"0")
-    hh = lpad(h,2,"0")
-    mii = lpad(mi,2,"0")
-    ss = lpad(s,2,"0")
+    yy = lpad(y, 4, "0") # here y is supposed to be positive.
+    mm = lpad(m, 2, "0")
+    dd = lpad(d, 2, "0")
+    hh = lpad(h, 2, "0")
+    mii = lpad(mi, 2, "0")
+    ss = lpad(s, 2, "0")
 
     # Set year-month-day string (ymds).
     ymds = old ? "$(dd)/$(mm)/$(yy)" : "$(yy)-$(mm)-$(dd)"
@@ -84,8 +84,10 @@ function get_date(dt::DateTime, old::Bool, timetag::Bool)
 end
 
 # Scalar function
-get_date(dt::DateTime=Dates.unix2datetime(Libc.time());
-         old::Bool=false, timetag::Bool=false) = get_date(dt, old, timetag)
+get_date(
+    dt::DateTime = Dates.unix2datetime(Libc.time());
+    old::Bool = false, timetag::Bool = false
+) = get_date(dt, old, timetag)
 
-get_date(dt...; old::Bool=false, timetag::Bool=false) =
+get_date(dt...; old::Bool = false, timetag::Bool = false) =
     get_date(DateTime(dt...), old, timetag)

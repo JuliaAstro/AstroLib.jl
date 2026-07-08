@@ -1,7 +1,7 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function altaz2hadec(alt::T, az::T, lat::T) where {T<:AbstractFloat}
+function altaz2hadec(alt::T, az::T, lat::T) where {T <: AbstractFloat}
     # Convert to radians.
     alt_r = deg2rad(alt)
     az_r = deg2rad(az)
@@ -10,9 +10,13 @@ function altaz2hadec(alt::T, az::T, lat::T) where {T<:AbstractFloat}
     sin_az_r, cos_az_r = sincos(az_r)
     sin_lat_r, cos_lat_r = sincos(lat_r)
     # Find local hour angle (in degrees, from 0. to 360.).
-    ha = rad2deg(atan(-sin_az_r * cos_alt_r,
-                      -cos_az_r * sin_lat_r * cos_alt_r +
-                      sin_alt_r * cos_lat_r))
+    ha = rad2deg(
+        atan(
+            -sin_az_r * cos_alt_r,
+            -cos_az_r * sin_lat_r * cos_alt_r +
+                sin_alt_r * cos_lat_r
+        )
+    )
     ha = mod(ha, 360)
     # Find declination (positive if north of Celestial Equator, negative if
     # south)
@@ -87,13 +91,15 @@ altaz2hadec(alt::Real, az::Real, lat::Real) =
 
 altaz2hadec(altaz::Tuple{Real, Real}, lat::Real) = altaz2hadec(altaz..., lat)
 
-function altaz2hadec(alt::AbstractArray{R}, az::AbstractArray{<:Real},
-                     lat::AbstractArray{<:Real}) where {R<:Real}
+function altaz2hadec(
+        alt::AbstractArray{R}, az::AbstractArray{<:Real},
+        lat::AbstractArray{<:Real}
+    ) where {R <: Real}
     if !(length(alt) == length(az) == length(lat))
         throw(DimensionMismatch("alt, az, and lat arrays must have the same length"))
     end
     typealt = float(R)
-    ha  = similar(alt, typealt)
+    ha = similar(alt, typealt)
     dec = similar(alt, typealt)
     for i in eachindex(alt)
         ha[i], dec[i] = altaz2hadec(alt[i], az[i], lat[i])

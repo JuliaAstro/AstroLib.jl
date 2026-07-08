@@ -1,16 +1,16 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function eci2geo(x::T, y::T, z::T, jd::T) where {T<:AbstractFloat}
-    Re    = planets["earth"].eqradius*1e-3
+function eci2geo(x::T, y::T, z::T, jd::T) where {T <: AbstractFloat}
+    Re = planets["earth"].eqradius * 1.0e-3
     theta = atan(y, x) # Azimuth.
-    gst   = ct2lst(zero(T), jd)
-    sid_angle = gst*pi/12 # Sidereal angle.
-    long  = mod(rad2deg(theta - sid_angle), 360) # Longitude.
-    r     = hypot(x, y)
-    lat   = atan(z, r) # Latitude.
-    alt   = r/cos(lat) - Re # Altitude.
-    lat   = rad2deg(lat)
+    gst = ct2lst(zero(T), jd)
+    sid_angle = gst * pi / 12 # Sidereal angle.
+    long = mod(rad2deg(theta - sid_angle), 360) # Longitude.
+    r = hypot(x, y)
+    lat = atan(z, r) # Latitude.
+    alt = r / cos(lat) - Re # Altitude.
+    lat = rad2deg(lat)
     return lat, long, alt
 end
 
@@ -83,15 +83,17 @@ eci2geo(x::Real, y::Real, z::Real, jd::Real) =
 eci2geo(xyz::Tuple{Real, Real, Real}, jd::Real) =
     eci2geo(xyz..., jd)
 
-function eci2geo(x::AbstractArray{X}, y::AbstractArray{<:Real}, z::AbstractArray{<:Real},
-                 jd::AbstractArray{<:Real}) where {X<:Real}
+function eci2geo(
+        x::AbstractArray{X}, y::AbstractArray{<:Real}, z::AbstractArray{<:Real},
+        jd::AbstractArray{<:Real}
+    ) where {X <: Real}
     if !(length(x) == length(y) == length(z) == length(jd))
         throw(DimensionMismatch("x, y, z, and jd arrays should be of the same length"))
     end
     typex = float(X)
-    lat  = similar(x, typex)
+    lat = similar(x, typex)
     long = similar(x, typex)
-    alt  = similar(x, typex)
+    alt = similar(x, typex)
     for i in eachindex(x)
         lat[i], long[i], alt[i] = eci2geo(x[i], y[i], z[i], jd[i])
     end

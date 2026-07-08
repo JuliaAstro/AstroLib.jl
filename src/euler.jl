@@ -1,26 +1,37 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function _euler(ai::T, bi::T, select::Integer, FK4::Bool, radians::Bool) where {T<:AbstractFloat}
+function _euler(ai::T, bi::T, select::Integer, FK4::Bool, radians::Bool) where {T <: AbstractFloat}
 
-    if select>6 || select<1
-        throw(DomainError(
-            select,
-            "Input for coordinate transformation should be an integer in the range 1:6"))
+    if select > 6 || select < 1
+        throw(
+            DomainError(
+                select,
+                "Input for coordinate transformation should be an integer in the range 1:6"
+            )
+        )
     end
 
     if FK4
         psi = (0.57595865315, 4.9261918136, 0.0, 0.0, 0.11129056012, 4.7005372834)
-        stheta = (0.88781538514, -0.88781538514,0.39788119938, -0.39788119938,
-                  0.86766174755, -0.86766174755)
-        ctheta = (0.46019978478, 0.46019978478, 0.91743694670, 0.9174369467,
-                  0.49715499774, 0.49715499774)
-        phi = (4.9261918136,  0.57595865315, 0.0, 0.0, 4.7005372834, 0.11129056012)
+        stheta = (
+            0.88781538514, -0.88781538514, 0.39788119938, -0.39788119938,
+            0.86766174755, -0.86766174755,
+        )
+        ctheta = (
+            0.46019978478, 0.46019978478, 0.9174369467, 0.9174369467,
+            0.49715499774, 0.49715499774,
+        )
+        phi = (4.9261918136, 0.57595865315, 0.0, 0.0, 4.7005372834, 0.11129056012)
     else
         psi = (0.574770433, 4.9368292465, 0.0, 0.0, 0.11142137093, 4.71279419371)
-        stheta = (0.88998808748, -0.88998808748, 0.39777715593, -0.39777715593,
-                  0.86766622025, -0.86766622025)
-        ctheta = (0.45598377618, 0.45598377618, 0.91748206207, 0.91748206207,
-                  0.49714719172, 0.49714719172)
+        stheta = (
+            0.88998808748, -0.88998808748, 0.39777715593, -0.39777715593,
+            0.86766622025, -0.86766622025,
+        )
+        ctheta = (
+            0.45598377618, 0.45598377618, 0.91748206207, 0.91748206207,
+            0.49714719172, 0.49714719172,
+        )
         phi = (4.9368292465, 0.574770433, 0.0, 0.0, 4.71279419371, 0.11142137093)
     end
 
@@ -31,8 +42,8 @@ function _euler(ai::T, bi::T, select::Integer, FK4::Bool, radians::Bool) where {
     sa, ca = sincos(ai - phi[select])
     sb, cb = sincos(bi)
     x = (cb * sa, cb * ca, sb)
-    bo = ctheta[select]*x[3] - stheta[select]*x[1]
-    ao = mod2pi(atan(ctheta[select]*x[1] + stheta[select]*x[3], x[2]) + psi[select])
+    bo = ctheta[select] * x[3] - stheta[select] * x[1]
+    ao = mod2pi(atan(ctheta[select] * x[1] + stheta[select] * x[3], x[2]) + psi[select])
     bo = asin(bo)
 
     if radians
@@ -92,23 +103,24 @@ julia> euler(299.590315, 35.201604, 1)
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-euler(ai::Real, bi::Real, select::Integer; FK4::Bool=false, radians::Bool=false) =
+euler(ai::Real, bi::Real, select::Integer; FK4::Bool = false, radians::Bool = false) =
     _euler(promote(float(ai), float(bi))..., select, FK4, radians)
 
-euler(aibi::Tuple{Real, Real}, select::Integer; FK4::Bool=false, radians::Bool=false) =
-    euler(aibi[1], aibi[2], select, FK4=FK4, radians=radians)
+euler(aibi::Tuple{Real, Real}, select::Integer; FK4::Bool = false, radians::Bool = false) =
+    euler(aibi[1], aibi[2], select; FK4, radians)
 
-function euler(ai::AbstractVector{R}, bi::AbstractVector{<:Real}, select::Integer;
-               FK4::Bool=false, radians::Bool=false) where {R<:Real}
+function euler(
+        ai::AbstractVector{R}, bi::AbstractVector{<:Real}, select::Integer;
+        FK4::Bool = false, radians::Bool = false
+    ) where {R <: Real}
     if length(ai) != length(bi)
         throw(DimensionMismatch("ai and bi arrays should be of the same length"))
     end
     typeai = float(R)
-    ai_out  = similar(ai,  typeai)
+    ai_out = similar(ai, typeai)
     bi_out = similar(bi, typeai)
     for i in eachindex(ai)
-        ai_out[i], bi_out[i] = euler(ai[i], bi[i], select,
-                                     FK4=FK4, radians=radians)
+        ai_out[i], bi_out[i] = euler(ai[i], bi[i], select; FK4, radians)
     end
     return ai_out, bi_out
 end

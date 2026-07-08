@@ -73,8 +73,8 @@ function juldate(dt::DateTime)
         year -= 1
         month += 12
     end
-    jd = fld(year, 4) + 365*(year - 1860) + floor(306001 * (month + 1) / 10000) +
-        (day + hours/24 + minutes/1440 + seconds/86400 + milliseconds/86400000) - 1055//10
+    jd = fld(year, 4) + 365 * (year - 1860) + floor(306001 * (month + 1) / 10000) +
+        (day + hours / 24 + minutes / 1440 + seconds / 86400 + milliseconds / 86400000) - 1055 // 10
 
     # Adjust for Gregorian Calendar, started on 1582-10-15 (= RJD -100830.5).
     if jd > -100830.5

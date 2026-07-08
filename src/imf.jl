@@ -1,31 +1,36 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function imf(mass::AbstractVector{T}, expon::AbstractVector{T},
-             mass_range::AbstractVector{T}) where {T<:AbstractFloat}
+function imf(
+        mass::AbstractVector{T}, expon::AbstractVector{T},
+        mass_range::AbstractVector{T}
+    ) where {T <: AbstractFloat}
     ne_comp = length(expon)
     if length(mass_range) != ne_comp + 1
-        throw(DimensionMismatch(
-            "Length of array mass_range is not one more than that of expon"))
+        throw(
+            DimensionMismatch(
+                "Length of array mass_range is not one more than that of expon"
+            )
+        )
     end
     integ = Vector{T}(undef, ne_comp)
     joint = ones(T, ne_comp)
-    for i = 1:ne_comp
+    for i in 1:ne_comp
         if expon[i] != -1
-            integ[i] = (mass_range[i+1]^(1 + expon[i]) - mass_range[i]^(1 + expon[i]))/
-                       (1 + expon[i])
+            integ[i] = (mass_range[i + 1]^(1 + expon[i]) - mass_range[i]^(1 + expon[i])) /
+                (1 + expon[i])
         else
-            integ[i] = log(mass_range[i+1]/mass_range[i])
+            integ[i] = log(mass_range[i + 1] / mass_range[i])
         end
         if i != 1
-            joint[i] = joint[i-1]*(mass_range[i]^(expon[i-1] - expon[i]))
+            joint[i] = joint[i - 1] * (mass_range[i]^(expon[i - 1] - expon[i]))
         end
     end
     norm = joint ./ (dot(integ, joint))
     psi = fill!(similar(mass), 0)
-    for i = 1:ne_comp
-        test = findall(mass_range[i] .<  mass .< mass_range[i+1])
-        if length(test) !=0
-            psi[test] = norm[i].*(mass[test].^expon[i])
+    for i in 1:ne_comp
+        test = findall(mass_range[i] .< mass .< mass_range[i + 1])
+        if length(test) != 0
+            psi[test] = norm[i] .* (mass[test] .^ expon[i])
         end
     end
     return psi
@@ -75,7 +80,8 @@ julia> imf([3], [-1.35], [0.1, 110]) / 3
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-imf(mass::AbstractVector{<:Real},
+imf(
+    mass::AbstractVector{<:Real},
     expon::AbstractVector{<:Real},
-    mass_range::AbstractVector{<:Real}) =
-        imf(float(mass), float(expon), float(mass_range))
+    mass_range::AbstractVector{<:Real}
+) = imf(float(mass), float(expon), float(mass_range))

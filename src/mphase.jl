@@ -2,8 +2,8 @@
 # Copyright (C) 2016 Mosè Giordano.
 
 function mphase(jd::AbstractFloat)
-    ram, decm, dism = moonpos(jd, radians=true)
-    ras, decs = sunpos(jd, radians=true)
+    ram, decm, dism = moonpos(jd, radians = true)
+    ras, decs = sunpos(jd, radians = true)
     # phi: geocentric elongation of the Moon from the Sun
     # inc: selenocentric (Moon centered) elongation of the Earth from the Sun
     sin_decs, cos_decs = sincos(decs)
@@ -12,7 +12,7 @@ function mphase(jd::AbstractFloat)
     # "dism" is in kilometers, AU in meters
     sin_phi, cos_phi = sincos(phi)
     inc = atan(AU * sin_phi, dism * 1000 - AU * cos_phi)
-    return (1 + cos(inc))/2
+    return (1 + cos(inc)) / 2
 end
 
 """

@@ -1,8 +1,8 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function ticpos(deglen::T, pixlen::T, ticsize::T) where {T<:AbstractFloat}
-    minpix = deglen*60/pixlen
-    incr = minpix*ticsize
+function ticpos(deglen::T, pixlen::T, ticsize::T) where {T <: AbstractFloat}
+    minpix = deglen * 60 / pixlen
+    incr = minpix * ticsize
 
     if incr >= 30
         units = "Degrees"
@@ -45,12 +45,12 @@ function ticpos(deglen::T, pixlen::T, ticsize::T) where {T<:AbstractFloat}
     end
 
     if units == "Degrees"
-        minpix = minpix/60
+        minpix = minpix / 60
     elseif units == "Arc Seconds"
-        minpix = minpix*60
+        minpix = minpix * 60
     end
 
-    ticsize = incr/minpix
+    ticsize = incr / minpix
     return ticsize, incr, units
 end
 

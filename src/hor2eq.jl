@@ -1,9 +1,11 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function _hor2eq(alt::T, az::T, jd::T, lat::T, lon::T, altitude::T,
-                 pressure::T, temperature::T, ws::Bool, B1950::Bool,
-                 precession::Bool, nutate::Bool, aberration::Bool,
-                 refract::Bool) where {T<:AbstractFloat}
+function _hor2eq(
+        alt::T, az::T, jd::T, lat::T, lon::T, altitude::T,
+        pressure::T, temperature::T, ws::Bool, B1950::Bool,
+        precession::Bool, nutate::Bool, aberration::Bool,
+        refract::Bool
+    ) where {T <: AbstractFloat}
 
     if refract
         alt = co_refract(alt, altitude, pressure, temperature)
@@ -25,14 +27,14 @@ function _hor2eq(alt::T, az::T, jd::T, lat::T, lon::T, altitude::T,
     end
 
     if nutate
-       ra -= dra1
-       dec -= ddec1
+        ra -= dra1
+        dec -= ddec1
     end
     j_now = (jd - J2000) / JULIANYEAR + 2000
 
     if precession
         if B1950
-            ra, dec = precess(ra, dec, j_now, 1950, FK4=true)
+            ra, dec = precess(ra, dec, j_now, 1950, FK4 = true)
         else
             ra, dec = precess(ra, dec, j_now, 2000)
         end
@@ -40,17 +42,23 @@ function _hor2eq(alt::T, az::T, jd::T, lat::T, lon::T, altitude::T,
     return ra, dec, ha
 end
 
-hor2eq(alt::Real, az::Real, jd::Real, lat::Real, lon::Real, altitude::Real=0;
-       ws::Bool=false, B1950::Bool=false, precession::Bool=true, nutate::Bool=true,
-       aberration::Bool=true, refract::Bool=true, pressure::Real=NaN,
-       temperature::Real=NaN) =
-           _hor2eq(promote(float(alt), float(az), float(jd), float(lat), float(lon),
-                   float(altitude), float(temperature), float(pressure))..., ws, B1950,
-                   precession, nutate, aberration, refract)
+hor2eq(
+    alt::Real, az::Real, jd::Real, lat::Real, lon::Real, altitude::Real = 0;
+    ws::Bool = false, B1950::Bool = false, precession::Bool = true, nutate::Bool = true,
+    aberration::Bool = true, refract::Bool = true, pressure::Real = NaN,
+    temperature::Real = NaN
+) = _hor2eq(
+    promote(
+        float(alt), float(az), float(jd), float(lat), float(lon),
+        float(altitude), float(temperature), float(pressure)
+    )...,
+    ws, B1950, precession, nutate, aberration, refract
+)
 
-hor2eq(alt::Real, az::Real, jd::Real, obsname::AbstractString; kwargs...) =
-    hor2eq(alt, az, jd, observatories[obsname].latitude, observatories[obsname].longitude,
-           observatories[obsname].altitude; kwargs...)
+hor2eq(alt::Real, az::Real, jd::Real, obsname::AbstractString; kwargs...) = hor2eq(
+    alt, az, jd, observatories[obsname].latitude, observatories[obsname].longitude,
+    observatories[obsname].altitude; kwargs...
+)
 
 
 """

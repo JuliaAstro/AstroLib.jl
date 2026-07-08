@@ -1,22 +1,26 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function _uvbybeta(by::T, m1::T, c1::T, hbeta::T, eby_in::T,
-                   n::Integer) where {T<:AbstractFloat}
+function _uvbybeta(
+        by::T, m1::T, c1::T, hbeta::T, eby_in::T, n::Integer
+    ) where {T <: AbstractFloat}
     # Rm1 = -0.33 & Rc1 = 0.19 & Rub = 1.53
     if n < 1 || n > 8
-        throw(DomainError(
-            n,
-            "Input should be an integer in the range 1:8, giving approximate
-            stellar classification"))
+        throw(
+            DomainError(
+                n,
+                "Input should be an integer in the range 1:8, giving approximate
+                stellar classification"
+            )
+        )
     end
-    ub =  c1 + 2 * (m1 + by)
+    ub = c1 + 2 * (m1 + by)
     # For group 1, beta is a luminosity indicator, c0 is a temperature indicator.
     # (u-b) is also a suitable temperature indicator.
     if n == 1
         # For dereddening, linear relation used between the intrinsic (b-y)
         # and (u-b) (Crawford 1978, AJ 83, 48)
         if isnan(eby_in)
-           eby_in::T = (13.608 * by - ub + 1.467) / (12.078)
+            eby_in::T = (13.608 * by - ub + 1.467) / (12.078)
         end
         by0, m0, c0, ub0 = deredd(eby_in, by, m1, c1, ub)
         # When beta is not given, it is estimated using a cubic fit to the c0-beta
@@ -36,7 +40,7 @@ function _uvbybeta(by::T, m1::T, c1::T, hbeta::T, eby_in::T,
         # For dereddening the linear relations between c0 and (u-b) determined from
         # Zhang (1983, AJ 88, 825) is used.
         if isnan(eby_in)
-            eby_in = ((1.5 * c1 - ub + 0.035) / (1.5/(1.53/0.19) - 1)) / 1.53
+            eby_in = ((1.5 * c1 - ub + 0.035) / (1.5 / (1.53 / 0.19) - 1)) / 1.53
         end
         by0, m0, c0, ub0 = deredd(eby_in, by, m1, c1, ub)
 
@@ -48,7 +52,7 @@ function _uvbybeta(by::T, m1::T, c1::T, hbeta::T, eby_in::T,
         # For dereddening the linear relations between c0 and (u-b) determined from
         # Zhang (1983, AJ 88, 825) is used.
         if isnan(eby_in)
-            eby_in = ((1.36 * c1 - ub + 0.004) / (1.36/(1.53/0.19) - 1)) / 1.53
+            eby_in = ((1.36 * c1 - ub + 0.004) / (1.36 / (1.53 / 0.19) - 1)) / 1.53
         end
         by0, m0, c0, ub0 = deredd(eby_in, by, m1, c1, ub)
         # When beta is not given, it is derived from a fit of the c0-beta
@@ -61,7 +65,7 @@ function _uvbybeta(by::T, m1::T, c1::T, hbeta::T, eby_in::T,
         # For dereddening the linear relations between c0 and (u-b) determined from
         # Zhang (1983, AJ 88, 825) is used.
         if isnan(eby_in)
-            eby_in = ((1.32 * c1 - ub - 0.056) / (1.32/(1.53/0.19) - 1)) / 1.53
+            eby_in = ((1.32 * c1 - ub - 0.056) / (1.32 / (1.53 / 0.19) - 1)) / 1.53
         end
         by0, m0, c0, ub0 = deredd(eby_in, by, m1, c1, ub)
         # When beta is not given, it is derived from a fit of the c0-beta
@@ -127,7 +131,7 @@ function _uvbybeta(by::T, m1::T, c1::T, hbeta::T, eby_in::T,
             eby_in = by - by0
         end
         by0, m0, c0, ub0 = deredd(eby_in, by, m1, c1, ub)
-        delm0 =  m1zams - m0
+        delm0 = m1zams - m0
         mv = mvzams - 9 * (c0 - c1zams)
         te = 5040 / (0.771453 * by0 + 0.546544)
     elseif n == 7
@@ -165,13 +169,15 @@ function _uvbybeta(by::T, m1::T, c1::T, hbeta::T, eby_in::T,
 
         if isnan(eby_in)
             dbeta = 2.72 - hbeta
-            eby_in = by - (0.222 - 0.05 * (c1 - c1zams) +
-                    (1.11 - (0.1 + 3.6 * (m1zams - m1))) * dbeta + 2.7 * dbeta^2)
+            eby_in = by - (
+                0.222 - 0.05 * (c1 - c1zams) +
+                    (1.11 - (0.1 + 3.6 * (m1zams - m1))) * dbeta + 2.7 * dbeta^2
+            )
         end
         by0, m0, c0, ub0 = deredd(eby_in, by, m1, c1, ub)
         delm0 = m1zams - m0
         mv = mvzams - (9 + 20 * dbeta) * (c0 - c1zams)
-        te = 5040/(0.771453 * by0 + 0.546544)
+        te = 5040 / (0.771453 * by0 + 0.546544)
     elseif n == 8
         # Dereddening is done using color-color relations derived from
         # Olson (1984, A&AS 57, 443)
@@ -214,7 +220,7 @@ function _uvbybeta(by::T, m1::T, c1::T, hbeta::T, eby_in::T,
             te = exp10(3.924 - 0.416 * by0)
         else
             f = zero(T)
-            te = exp10(3.869 -0.341 * by0)
+            te = exp10(3.869 - 0.341 * by0)
         end
         mv = mvzams + f * (c1zams - c0) + 3.2 * delm0 - 0.07
     end
@@ -310,5 +316,5 @@ julia> uvbybeta.(by, m1, c1, nn, hbeta)
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-uvbybeta(by::Real, m1::Real, c1::Real, n::Integer, hbeta::Real=NaN, eby_in::Real=NaN) =
+uvbybeta(by::Real, m1::Real, c1::Real, n::Integer, hbeta::Real = NaN, eby_in::Real = NaN) =
     _uvbybeta(promote(float(by), float(m1), float(c1), float(hbeta), float(eby_in))..., n)

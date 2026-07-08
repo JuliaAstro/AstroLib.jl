@@ -1,45 +1,49 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-const Mjprec =
-    SMatrix{6,6}(+0.9999256782,     +0.0111820610,     +0.0048579479,
-                 -0.000551,         +0.238514,         -0.435623,
-                 -0.0111820611,     +0.9999374784,     -0.0000271474,
-                 -0.238565,         -0.002667,         +0.012254,
-                 -0.0048579477,     -0.0000271765,     +0.9999881997,
-                 +0.435739,         -0.008541,         +0.002117,
-                 +0.00000242395018, +0.00000002710663, +0.00000001177656,
-                 +0.99994704,       +0.01118251,       +0.00485767,
-                 -0.00000002710663, +0.00000242397878, -0.00000000006582,
-                 -0.01118251,       +0.99995883,       -0.00002714,
-                 -0.00000001177656, -0.00000000006587, 0.00000242410173,
-                 -0.00485767,       -0.00002718,       1.00000956)
+const Mjprec = SMatrix{6, 6}(
+    +0.9999256782, +0.011182061, +0.0048579479,
+    -0.000551, +0.238514, -0.435623,
+    -0.0111820611, +0.9999374784, -0.0000271474,
+    -0.238565, -0.002667, +0.012254,
+    -0.0048579477, -0.0000271765, +0.9999881997,
+    +0.435739, -0.008541, +0.002117,
+    +0.00000242395018, +0.00000002710663, +0.00000001177656,
+    +0.99994704, +0.01118251, +0.00485767,
+    -0.00000002710663, +0.00000242397878, -0.00000000006582,
+    -0.01118251, +0.99995883, -0.00002714,
+    -0.00000001177656, -0.00000000006587, 0.00000242410173,
+    -0.00485767, -0.00002718, 1.00000956
+)
 
 # Note: IDL version of `jprecess' changes in-place "muradec", "parallax" and
 # "radvel".  We don't do anything like this, but calculations are below,
 # commented, in case someone is interested.
-function _jprecess(ra::T, dec::T, parallax::T, radvel::T, epoch::T,
-                   muradec::Vector{T}) where {T<:AbstractFloat}
+function _jprecess(
+        ra::T, dec::T, parallax::T, radvel::T, epoch::T, muradec::Vector{T}
+    ) where {T <: AbstractFloat}
     if length(muradec) != 2
         throw(DomainError(muradec, "muradec must have length 2"))
     end
-    sinra, cosra  = sincos(deg2rad(ra))
+    sinra, cosra = sincos(deg2rad(ra))
     sindec, cosdec = sincos(deg2rad(dec))
     if isfinite(epoch) && epoch != 1950
         A = A_precess .+ deg2rad.(A_dot_precess .* (epoch .- 1950) ./ 360000)
     else
         A = A_precess
     end
-    r0 = SVector(cosra*cosdec,  sinra*cosdec,  sindec)
-    r0_dot = SVector(-muradec[1]*sinra*cosdec - muradec[2]*cosra*sindec,
-                     muradec[1]*cosra*cosdec - muradec[2]*sinra*sindec,
-                     muradec[2]*cosdec) + 21.095 * radvel * parallax * r0
+    r0 = SVector(cosra * cosdec, sinra * cosdec, sindec)
+    r0_dot = SVector(
+        -muradec[1] * sinra * cosdec - muradec[2] * cosra * sindec,
+        muradec[1] * cosra * cosdec - muradec[2] * sinra * sindec,
+        muradec[2] * cosdec
+    ) + 21.095 * radvel * parallax * r0
     r1 = r0 .- A .+ dot(r0, A) .* r0
     r1_dot = r0_dot .- A_dot_precess .+ dot(r0, A_dot_precess) .* r0
     R_1 = vcat(r1, r1_dot)
-    R  = Mjprec*R_1
+    R = Mjprec * R_1
     if isfinite(epoch)
-        t  = ((epoch - 1950) - 50.00021) / 100
+        t = ((epoch - 1950) - 50.00021) / 100
         rr1 = @view(R[1:3]) .+ deg2rad.(@view(R[4:6]) .* t ./ 3600)
         x = rr1[1]
         y = rr1[2]
@@ -53,9 +57,9 @@ function _jprecess(ra::T, dec::T, parallax::T, radvel::T, epoch::T,
         # z_dot = R[5]
     end
     rmag = norm((x, y, z))
-    r2 = rmag*rmag
+    r2 = rmag * rmag
     dec2000 = asin(z / rmag)
-    ra2000  = atan(y, x)
+    ra2000 = atan(y, x)
     # if isnan(epoch)
     #     muradec[1] = (x*y_dot - y*x_dot)/(x*x + y*y)
     #     muradec[2] = (z_dot*(x*x + y*y) - z*(x*x_dot + y*y_dot))/(r2*norm((x, y)))
@@ -67,57 +71,70 @@ function _jprecess(ra::T, dec::T, parallax::T, radvel::T, epoch::T,
     if ra2000 < 0
         ra2000 += 2 * T(pi)
     end
-    ra2000  = rad2deg(ra2000)
+    ra2000 = rad2deg(ra2000)
     dec2000 = rad2deg(dec2000)
     return ra2000, dec2000
 end
 
 # Main interface.
-jprecess(ra::Real, dec::Real, muradec::Vector{R};
-         parallax::Real=0.0, radvel::Real=0.0) where {R<:Real} =
-             _jprecess(promote(float(ra), float(dec), float(parallax),
-                               float(radvel), NaN)...,
-                       float(muradec))
+jprecess(
+    ra::Real, dec::Real, muradec::Vector{R};
+    parallax::Real = 0.0, radvel::Real = 0.0
+) where {R <: Real} = _jprecess(
+    promote(float(ra), float(dec), float(parallax), float(radvel), NaN)...,
+    float(muradec)
+)
 
-jprecess(ra::Real, dec::Real, epoch::Real=1950.0) =
-    _jprecess(promote(float(ra), float(dec), 0.0, 0.0, float(epoch))...,
-              zeros(typeof(float(ra)), 2))
+jprecess(ra::Real, dec::Real, epoch::Real = 1950.0) = _jprecess(
+    promote(float(ra), float(dec), 0.0, 0.0, float(epoch))...,
+    zeros(typeof(float(ra)), 2)
+)
 
 # Tuple arguments.
-jprecess(radec::Tuple{Real,Real}, muradec::Vector{<:Real};
-         parallax::Real=0.0, radvel::Real=0.0) =
-             jprecess(radec..., muradec, parallax=parallax, radvel=radvel)
+jprecess(
+    radec::Tuple{Real, Real}, muradec::Vector{<:Real};
+    parallax::Real = 0.0, radvel::Real = 0.0
+) =
+    jprecess(radec..., muradec, parallax = parallax, radvel = radvel)
 
-jprecess(radec::Tuple{Real,Real}, epoch::Real=1950.0) =
+jprecess(radec::Tuple{Real, Real}, epoch::Real = 1950.0) =
     jprecess(radec..., epoch)
 
 # Vectorial arguments.
-function jprecess(ra::AbstractArray{R}, dec::AbstractArray{<:Real},
-                  muradec::AbstractArray{<:Real};
-                  parallax::AbstractArray{<:Real}=zeros(R, length(ra)),
-                  radvel::AbstractArray{<:Real}=zeros(R, length(ra))) where {R<:Real}
+function jprecess(
+        ra::AbstractArray{R}, dec::AbstractArray{<:Real},
+        muradec::AbstractArray{<:Real};
+        parallax::AbstractArray{<:Real} = zeros(R, length(ra)),
+        radvel::AbstractArray{<:Real} = zeros(R, length(ra))
+    ) where {R <: Real}
     if !(length(ra) == length(dec) == size(muradec)[2] == length(parallax) == length(radvel))
         # TODO write more helpful error message
-        throw(DimensionMismatch(
-            "ra, dec, muradec[:,2], parallax, and radvel must have the same length"))
+        throw(
+            DimensionMismatch(
+                "ra, dec, muradec[:,2], parallax, and radvel must have the same length"
+            )
+        )
     end
     typer = float(R)
-    ra2000  = similar(ra, typer)
+    ra2000 = similar(ra, typer)
     dec2000 = similar(dec, typer)
     for i in eachindex(ra)
-        ra2000[i], dec2000[i] = jprecess(ra[i], dec[i], muradec[:,i],
-                                         parallax=parallax[i], radvel=radvel[i])
+        ra2000[i], dec2000[i] = jprecess(
+            ra[i], dec[i], muradec[:, i],
+            parallax = parallax[i], radvel = radvel[i]
+        )
     end
     return ra2000, dec2000
 end
 
-function jprecess(ra::AbstractArray{R}, dec::AbstractArray{<:Real},
-                  epoch::Real=1950.0) where {R<:Real}
+function jprecess(
+        ra::AbstractArray{R}, dec::AbstractArray{<:Real}, epoch::Real = 1950.0
+    ) where {R <: Real}
     if length(ra) != length(dec)
         throw(DimensionMismatch("ra and dec arrays should be of the same length"))
     end
     typer = float(R)
-    ra2000  = similar(ra, typer)
+    ra2000 = similar(ra, typer)
     dec2000 = similar(dec, typer)
     for i in eachindex(ra)
         ra2000[i], dec2000[i] = jprecess(ra[i], dec[i], epoch[i])

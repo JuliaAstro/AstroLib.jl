@@ -1,17 +1,17 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function aitoff(l::T, b::T) where {T<:AbstractFloat}
+function aitoff(l::T, b::T) where {T <: AbstractFloat}
     l = rem(l, T(360), RoundNearest)
-    alpha2 = deg2rad(l/2)
+    alpha2 = deg2rad(l / 2)
     delta = deg2rad(b)
     r2 = sqrt(T(2))
-    f = 2*r2/pi
+    f = 2 * r2 / pi
     sin_alpha2, cos_alpha2 = sincos(alpha2)
     sin_delta, cos_delta = sincos(delta)
     denom = sqrt(1 + cos_delta * cos_alpha2)
     return rad2deg(cos_delta * sin_alpha2 * 2 * r2 / denom / f),
-           rad2deg(sin_delta * r2 / denom / f)
+        rad2deg(sin_delta * r2 / denom / f)
 end
 
 """
@@ -67,7 +67,7 @@ aitoff(l::Real, b::Real) = aitoff(promote(float(l), float(b))...)
 
 aitoff(lb::Tuple{Real, Real}) = aitoff(lb...)
 
-function aitoff(l::AbstractArray{L}, b::AbstractArray{B}) where {L<:Real,B<:Real}
+function aitoff(l::AbstractArray{L}, b::AbstractArray{<:Real}) where {L <: Real}
     if length(l) != length(b)
         throw(DimensionMismatch("l and b arrays must have the same length"))
     end

@@ -1,11 +1,11 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function _co_aberration(jd::T, ra::T, dec::T, eps::T) where {T<:AbstractFloat}
+function _co_aberration(jd::T, ra::T, dec::T, eps::T) where {T <: AbstractFloat}
     t = (jd - J2000) / JULIANCENTURY
     if isnan(eps)
         eps = true_obliquity(jd)
     end
-    sunlong = sunpos(jd, radians=true)[3]
+    sunlong = sunpos(jd, radians = true)[3]
     e = @evalpoly t 0.016708634 -0.000042037 -0.0000001267
     pe = @evalpoly t 102.93735 1.71946 0.00046
     sd, cd = sincos(deg2rad(dec))
@@ -14,10 +14,10 @@ function _co_aberration(jd::T, ra::T, dec::T, eps::T) where {T<:AbstractFloat}
     sp, cp = sincos(deg2rad(pe))
     ss, cs = sincos(sunlong)
     sa, ca = sincos(deg2rad(ra))
-    t1 = (cs*ce*(te*cd - sa*sd) + ca*sd*ss)
-    t2 = (cp*ce*(te*cd - sa*sd) + ca*sd*sp)
-    d_ra = 20.49552*(e*(ca*cp*ce + sa*sp) - ca*cs*ce - sa*ss)/cd
-    d_dec = 20.49552*(e*t2 - t1)
+    t1 = (cs * ce * (te * cd - sa * sd) + ca * sd * ss)
+    t2 = (cp * ce * (te * cd - sa * sd) + ca * sd * sp)
+    d_ra = 20.49552 * (e * (ca * cp * ce + sa * sp) - ca * cs * ce - sa * ss) / cd
+    d_dec = 20.49552 * (e * t2 - t1)
     return d_ra, d_dec
 end
 
@@ -80,16 +80,18 @@ Earth's velocity is perpendicular to the direction of the star.
 
 This function calls [`true_obliquity`](@ref) and [`sunpos`](@ref).
 """
-co_aberration(jd::Real, ra::Real, dec::Real, eps::Real=NaN) =
+co_aberration(jd::Real, ra::Real, dec::Real, eps::Real = NaN) =
     _co_aberration(promote(float(jd), float(ra), float(dec), float(eps))...)
 
-function co_aberration(jd::AbstractVector{R}, ra::AbstractVector{R},
-                       dec::AbstractVector{R}, eps::Real=NaN) where {R<:Real}
+function co_aberration(
+        jd::AbstractVector{R}, ra::AbstractVector{R},
+        dec::AbstractVector{R}, eps::Real = NaN
+    ) where {R <: Real}
     if !(length(jd) == length(ra) == length(dec))
         throw(DimensionMismatch("jd, ra and dec vectors should be of the same length"))
     end
     typejd = float(R)
-    ra_out  = similar(ra,  typejd)
+    ra_out = similar(ra, typejd)
     dec_out = similar(dec, typejd)
     for i in eachindex(jd)
         ra_out[i], dec_out[i] = co_aberration(jd[i], ra[i], dec[i], eps)

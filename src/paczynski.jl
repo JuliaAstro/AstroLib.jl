@@ -3,19 +3,19 @@
 
 function paczynski(u::AbstractFloat)
     absu = abs(u)
-    if absu >= 1e5
+    if absu >= 1.0e5
         # You can verify that:
         #   u=1e5; (u*u + 2)/(u*sqrt(u*u + 4)) === 1.0
         return copysign(1.0, u)
-    elseif absu <= 1e-8
+    elseif absu <= 1.0e-8
         # You can verify that:
         #   u = 1e-8; (u*u + 2)/(u*sqrt(u*u + 4)) === inv(u)
         inv(u)
     else
-        u2 = u*u
+        u2 = u * u
         # Using `hypot' in place of the square root would be an overkill since
         #   1e-8 < |u| < 1e5
-        return (u2 + 2)/(u*sqrt(u2 + 4))
+        return (u2 + 2) / (u * sqrt(u2 + 4))
     end
 end
 

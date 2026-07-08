@@ -1,12 +1,12 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function deredd(Eby::T, by::T, m1::T, c1::T, ub::T) where {T<:AbstractFloat}
+function deredd(Eby::T, by::T, m1::T, c1::T, ub::T) where {T <: AbstractFloat}
     Rm1 = -0.33
     Rc1 = 0.19
     Rub = 1.53
     Eby0 = Eby > 0 ? Eby : zero(T)
-    return by - Eby0, m1 - Rm1*Eby0, c1 - Rc1*Eby0, ub - Rub*Eby0
+    return by - Eby0, m1 - Rm1 * Eby0, c1 - Rc1 * Eby0, ub - Rub * Eby0
 end
 
 """
@@ -53,16 +53,18 @@ Code of this function is based on IDL Astronomy User's Library.
 deredd(Eby::Real, by::Real, m1::Real, c1::Real, ub::Real) =
     deredd(promote(float(Eby), float(by), float(m1), float(c1), float(ub))...)
 
-function deredd(Eby::AbstractArray{E}, by::AbstractArray{<:Real},
-                m1::AbstractArray{<:Real}, c1::AbstractArray{<:Real},
-                ub::AbstractArray{<:Real}) where {E<:Real}
+function deredd(
+        Eby::AbstractArray{E}, by::AbstractArray{<:Real},
+        m1::AbstractArray{<:Real}, c1::AbstractArray{<:Real},
+        ub::AbstractArray{<:Real}
+    ) where {E <: Real}
     if !(length(Eby) == length(by) == length(m1) == length(c1) == length(ub))
         throw(DimensionMismatch("Eby, by, m1, c1, and ub arrays should be of the same length"))
     end
     typeeby = float(E)
     by0 = similar(Eby, typeeby)
-    m0  = similar(Eby, typeeby)
-    c0  = similar(Eby, typeeby)
+    m0 = similar(Eby, typeeby)
+    c0 = similar(Eby, typeeby)
     ub0 = similar(Eby, typeeby)
     for i in eachindex(Eby)
         by0[i], m0[i], c0[i], ub0[i] = deredd(Eby[i], by[i], m1[i], c1[i], ub[i])
