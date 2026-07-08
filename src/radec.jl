@@ -1,7 +1,7 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _radec(ra::T, dec::T, hours::Bool) where {T<:AbstractFloat}
+function _radec(ra::T, dec::T, hours::Bool) where {T <: AbstractFloat}
     # Compute right ascension.
     if hours
         ra_hr, ra_min, ra_sec = sixty(mod(ra, 24))
@@ -56,24 +56,25 @@ julia> radec(6.7525, -16.7161, hours=true)
 (6.0, 45.0, 9.0, -16.0, 42.0, 57.9600000000064)
 ```
 """
-radec(ra::Real, dec::Real; hours::Bool=false) =
+radec(ra::Real, dec::Real; hours::Bool = false) =
     _radec(promote(float(ra), float(dec))..., hours)
 
-function radec(ra::AbstractArray{R}, dec::AbstractArray{D};
-               hours::Bool=false) where {R<:Real, D<:Real}
+function radec(
+        ra::AbstractArray{R}, dec::AbstractArray{D}; hours::Bool = false
+    ) where {R <: Real, D <: Real}
     if length(ra) != length(dec)
         throw(DimensionMismatch("ra and dec arrays should be of the same length"))
     end
     typera = float(R)
-    ra_hr   = similar(ra, typera)
-    ra_min  = similar(ra, typera)
-    ra_sec  = similar(ra, typera)
+    ra_hr = similar(ra, typera)
+    ra_min = similar(ra, typera)
+    ra_sec = similar(ra, typera)
     dec_deg = similar(ra, typera)
     dec_min = similar(ra, typera)
     dec_sec = similar(ra, typera)
     for i in eachindex(ra)
         ra_hr[i], ra_min[i], ra_sec[i], dec_deg[i], dec_min[i], dec_sec[i] =
-            radec(ra[i], dec[i], hours=hours)
+            radec(ra[i], dec[i]; hours)
     end
     return ra_hr, ra_min, ra_sec, dec_deg, dec_min, dec_sec
 end

@@ -2,9 +2,9 @@
 
 using Luxor
 
-function ellipse2c(focus1::Point, focus2::Point, k; stepvalue=pi/100)
+function ellipse2c(focus1::Point, focus2::Point, k; stepvalue = pi / 100)
     # k is sum of distances to focii of any points on the ellipse)
-    a = k/2  # Major axis
+    a = k / 2  # Major axis
     cpoint = midpoint(focus1, focus2)
     dc = distance(focus1, cpoint) # Distance of the foci to the center
     b = sqrt(abs(a^2 - dc^2)) # Minor axis
@@ -21,7 +21,7 @@ function ellipse2c(focus1::Point, focus2::Point, k; stepvalue=pi/100)
         end
     end
     closepath()
-    strokepath()
+    return strokepath()
 end
 
 """
@@ -31,18 +31,18 @@ function draw_logo(fname)
     Drawing(500, 500, fname)
     setline(3)
     origin()
-    cpoints = ngon(O, 200, 3, vertices=true)
+    cpoints = ngon(O, 200, 3, vertices = true)
 
     ellipse2c(O, cpoints[1], 280)
     ellipse2c(O, cpoints[2], 280)
     ellipse2c(O, cpoints[3], 280)
 
     darker_purple = (0.584, 0.345, 0.698)
-    lighter_purple  = (0.667, 0.475, 0.757)
-    darker_green  = (0.22, 0.596, 0.149)
-    lighter_green  = (0.376, 0.678, 0.318)
-    darker_red  = (0.796, 0.235, 0.2)
-    lighter_red  = (0.835, 0.388, 0.361)
+    lighter_purple = (0.667, 0.475, 0.757)
+    darker_green = (0.22, 0.596, 0.149)
+    lighter_green = (0.376, 0.678, 0.318)
+    darker_red = (0.796, 0.235, 0.2)
+    lighter_red = (0.835, 0.388, 0.361)
 
     ballradius = 40
     sethue(darker_red...)
@@ -61,11 +61,11 @@ function draw_logo(fname)
     circle(cpoints[3], 0.65ballradius, :fill)
 
     sethue("gold")
-    star(O, 35, 12, 0.7, pi/3, :fill)
+    star(O, 35, 12, 0.7, pi / 3, :fill)
     sethue("yellow")
     star(O, 35, 15, 0.3, 0, :fill)
     finish()
-    preview()
+    return preview()
 end
 
 draw_logo("/tmp/logo.png")

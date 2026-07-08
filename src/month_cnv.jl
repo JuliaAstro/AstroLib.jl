@@ -56,8 +56,10 @@ julia> month_cnv.([2, 12, 6], short=true, low=true)
 ```
 
 """
-function month_cnv(number::Integer; short::Bool=false,
-                   up::Bool=false, low::Bool=false)
+function month_cnv(
+        number::Integer; short::Bool = false,
+        up::Bool = false, low::Bool = false
+    )
     if short
         name = Dates.ENGLISH.months_abbr[number]
     else

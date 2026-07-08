@@ -1,22 +1,18 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function tic_one(zmin::T, pixx::T, incr::T, ra::Bool) where {T<:AbstractFloat}
-    if ra
-        mul = 4
-    else
-        mul = 60
-    end
-    min1 = zmin*mul
+function tic_one(zmin::T, pixx::T, incr::T, ra::Bool) where {T <: AbstractFloat}
+    mul = ra ? 4 : 60
+    min1 = zmin * mul
     incra = abs(incr)
     rem = min1 % incra
-    sign = min1*incr
+    sign = min1 * incr
 
     if sign > 0
-        tic1 = pixx - abs(rem)*pixx/incra
-        min2 = (min1 + incr -rem)/mul
+        tic1 = pixx - abs(rem) * pixx / incra
+        min2 = (min1 + incr - rem) / mul
     else
-        tic1 = abs(rem)*pixx/incra
-        min2 = (min1 - rem)/mul
+        tic1 = abs(rem) * pixx / incra
+        min2 = (min1 - rem) / mul
     end
     return min2, tic1
 end
@@ -73,5 +69,5 @@ mark should be labeled 30 deg 20 minutes and be placed at pixel value
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-tic_one(zmin::Real, pixx::Real, incr::Real, ra::Bool=false) =
+tic_one(zmin::Real, pixx::Real, incr::Real, ra::Bool = false) =
     tic_one(promote(float(zmin), float(pixx), float(incr))..., ra)

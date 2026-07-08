@@ -1,7 +1,7 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _polrec(radius::T, angle::T, degrees::Bool) where {T<:AbstractFloat}
+function _polrec(radius::T, angle::T, degrees::Bool) where {T <: AbstractFloat}
     if degrees
         angle = deg2rad(angle)
     end
@@ -50,14 +50,14 @@ julia> x, y = polrec(1.7, 227, degrees=true)
 ```
 
 """
-polrec(radius::Real, angle::Real; degrees::Bool=false) =
+polrec(radius::Real, angle::Real; degrees::Bool = false) =
     _polrec(promote(float(radius), float(angle))..., degrees)
 
-polrec(r_a::Tuple{Real, Real}; degrees::Bool=false) = polrec(r_a...,
-                                                             degrees=degrees)
+polrec(r_a::Tuple{Real, Real}; degrees::Bool = false) = polrec(r_a...; degrees)
 
-function polrec(r::AbstractArray{R}, a::AbstractArray{A};
-                degrees::Bool=false) where {R<:Real, A<:Real}
+function polrec(
+        r::AbstractArray{R}, a::AbstractArray{A}; degrees::Bool = false
+    ) where {R <: Real, A <: Real}
     if length(r) != length(a)
         throw(DimensionMismatch("r and a arrays should be of the same length"))
     end
@@ -65,7 +65,7 @@ function polrec(r::AbstractArray{R}, a::AbstractArray{A};
     x = similar(r, typer)
     y = similar(r, typer)
     for i in eachindex(r)
-        x[i], y[i] = polrec(r[i], a[i], degrees=degrees)
+        x[i], y[i] = polrec(r[i], a[i]; degrees)
     end
     return x, y
 end

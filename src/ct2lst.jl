@@ -1,12 +1,12 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function ct2lst(long::T, jd::T) where {T<:AbstractFloat}
+function ct2lst(long::T, jd::T) where {T <: AbstractFloat}
     t0 = jd - J2000
-    t  = t0 / JULIANCENTURY
+    t = t0 / JULIANCENTURY
     # Compute GST in seconds.
-    θ = ct2lst_c[1] + (ct2lst_c[2]*t0) + t*t*(ct2lst_c[3] - t / ct2lst_c[4])
-    return mod((θ + long)/15, 24)
+    θ = ct2lst_c[1] + (ct2lst_c[2] * t0) + t * t * (ct2lst_c[3] - t / ct2lst_c[4])
+    return mod((θ + long) / 15, 24)
 end
 
 """
@@ -101,12 +101,12 @@ function ct2lst end
 
 ct2lst(long::Real, jd::Real) = ct2lst(promote(float(long), float(jd))...)
 
-function ct2lst(long::T, tz::T, date::DateTime) where {T<:AbstractFloat}
+function ct2lst(long::T, tz::T, date::DateTime) where {T <: AbstractFloat}
     # In order to handle time zones, package "TimeZones.jl" is much better, but
     # here we need only to add the time zone to UTC time.  All time zones I know
     # are either integer, or ±30 or ±45 minutes, so it should be safe enough to
     # convert hours to minutes and subtract minutes from "time".
-    date = date - Dates.Minute(round(Int, tz*60))
+    date = date - Dates.Minute(round(Int, tz * 60))
     return ct2lst(long, jdcnv(date))
 end
 

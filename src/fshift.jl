@@ -1,7 +1,7 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _fshift(image::AbstractArray{T}, Δx::T, Δy::T) where {T<:AbstractFloat}
+function _fshift(image::AbstractArray{T}, Δx::T, Δy::T) where {T <: AbstractFloat}
 
     # Separate shift into an integer and fractional shift
     intx = floor(Int, Δx)
@@ -19,14 +19,14 @@ function _fshift(image::AbstractArray{T}, Δx::T, Δy::T) where {T<:AbstractFloa
     end
 
     # Use bilinear interpolation between four pixels
-    return s .* ((1 .- fracx) .* (1 .- fracy)) .+ 
-           circshift(s, (0,1)) .* ((1 .- fracx) .* fracy) .+
-           circshift(s, (1,0)) .* (fracx .* (1 .- fracy)) .+
-           circshift(s, (1,1)) .* fracx .* fracy
+    return s .* ((1 .- fracx) .* (1 .- fracy)) .+
+        circshift(s, (0, 1)) .* ((1 .- fracx) .* fracy) .+
+        circshift(s, (1, 0)) .* (fracx .* (1 .- fracy)) .+
+        circshift(s, (1, 1)) .* fracx .* fracy
 end
 
 """
-    fshift(image, Δx, Δy) -> shifted_image 
+    fshift(image, Δx, Δy) -> shifted_image
 
 ### Purpose ###
 
@@ -88,10 +88,10 @@ version 2  D. Lindler  May, 1992 - rewritten for IDL version 2
 Code of this function is based on IDL Astronomy User's Library.
 
 """
-function fshift(image::AbstractArray{R}, Δx::Real, Δy::Real) where {R<:Real}
+function fshift(image::AbstractArray{<:Real}, Δx::Real, Δy::Real)
     # check that the image dimensions are 2D
     nd = ndims(image)
     @assert nd == 2 "The input image must be 2D!"
 
-    _fshift(float(image), promote(float(Δx), float(Δy))...)
+    return _fshift(float(image), promote(float(Δx), float(Δy))...)
 end

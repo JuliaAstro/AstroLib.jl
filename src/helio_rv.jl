@@ -1,11 +1,11 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function helio_rv(jd::T, t::T, P::T, V0::T, K::T, ecc::T, ω::T) where {T<:AbstractFloat}
+function helio_rv(jd::T, t::T, P::T, V0::T, K::T, ecc::T, ω::T) where {T <: AbstractFloat}
     E = kepler_solver(2 * T(pi) * (jd - t) / P, ecc)
     ν = trueanom(E, ecc)
     ω = deg2rad(ω)
-    return K*(cos(ν + ω) + (ecc*cos(ω))) + V0
+    return K * (cos(ν + ω) + (ecc * cos(ω))) + V0
 end
 
 """
@@ -78,7 +78,10 @@ must be used throughtout.
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-helio_rv(jd::Real, t::Real, P::Real, V0::Real,
-         K::Real, ecc::Real=0, ω::Real=0) =
-             helio_rv(promote(float(jd), float(t), float(P),
-                              float(V0), float(K), float(ecc), float(ω))...)
+helio_rv(
+    jd::Real, t::Real, P::Real, V0::Real, K::Real, ecc::Real = 0, ω::Real = 0
+) = helio_rv(
+    promote(
+        float(jd), float(t), float(P), float(V0), float(K), float(ecc), float(ω)
+    )...
+)

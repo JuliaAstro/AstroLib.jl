@@ -17,7 +17,7 @@ using Documenter
 
     isnightly = occursin("DEV", string(VERSION))
     if Sys.islinux() && !isnightly
-        DocMeta.setdocmeta!(AstroLib, :DocTestSetup, :(using AstroLib), recursive=true)
+        DocMeta.setdocmeta!(AstroLib, :DocTestSetup, :(using AstroLib), recursive = true)
         doctest(AstroLib)
     end
 end

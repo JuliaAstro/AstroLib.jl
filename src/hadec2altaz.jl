@@ -1,18 +1,18 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _hadec2altaz(ha::T, dec::T, lat::T, ws::Bool) where {T<:AbstractFloat}
+function _hadec2altaz(ha::T, dec::T, lat::T, ws::Bool) where {T <: AbstractFloat}
     sh, ch = sincos(deg2rad(ha))
     sd, cd = sincos(deg2rad(dec))
     sl, cl = sincos(deg2rad(lat))
 
-    x = -ch*cd*sl + sd*cl
-    y = -sh*cd
-    z = ch*cd*cl + sd*sl
+    x = -ch * cd * sl + sd * cl
+    y = -sh * cd
+    z = ch * cd * cl + sd * sl
     r = hypot(x, y)
 
     # Now get altitude, azimuth
-    az  = rad2deg(mod2pi(atan(y, x)))
+    az = rad2deg(mod2pi(atan(y, x)))
     alt = rad2deg(atan(z, r))
     # Convert azimuth to West from South, if desired
     if ws
@@ -77,22 +77,24 @@ Declination.
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-hadec2altaz(ha::Real, dec::Real, lat::Real; ws::Bool=false) =
+hadec2altaz(ha::Real, dec::Real, lat::Real; ws::Bool = false) =
     _hadec2altaz(promote(float(ha), float(dec), float(lat))..., ws)
 
-hadec2altaz(hadec::Tuple{Real, Real}, lat::Real; ws::Bool=false) =
-    hadec2altaz(hadec..., lat, ws=ws)
+hadec2altaz(hadec::Tuple{Real, Real}, lat::Real; ws::Bool = false) =
+    hadec2altaz(hadec..., lat; ws)
 
-function hadec2altaz(ha::AbstractArray{R}, dec::AbstractArray{<:Real},
-                     lat::AbstractArray{<:Real}; ws::Bool=false) where {R<:Real}
+function hadec2altaz(
+        ha::AbstractArray{R}, dec::AbstractArray{<:Real},
+        lat::AbstractArray{<:Real}; ws::Bool = false
+    ) where {R <: Real}
     if !(length(ha) == length(dec) == length(lat))
         throw(DimensionMismatch("ha, dec, and lat arrays must have the same length"))
     end
     typeha = float(R)
     alt = similar(ha, typeha)
-    az  = similar(ha, typeha)
+    az = similar(ha, typeha)
     for i in eachindex(ha)
-        alt[i], az[i] = hadec2altaz(ha[i], dec[i], lat[i], ws=ws)
+        alt[i], az[i] = hadec2altaz(ha[i], dec[i], lat[i]; ws)
     end
     return alt, az
 end

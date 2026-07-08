@@ -5,11 +5,11 @@
 # Possible strategy: hold the sign of number in a variable (you can use
 # copysign(1, number)), set result[1] equal to dd and multiply the first
 # non-zero element (use findfirst for that) by the sign of number.
-function sixty(number::T) where {T<:AbstractFloat}
+function sixty(number::T) where {T <: AbstractFloat}
     dd = trunc(abs(number))
     mm = trunc(abs(60 * number) - 60 * dd)
     ss = abs(3600 * number)
-    return SVector{3,T}(trunc(number), mm, ss - 3600 * dd - 60 * mm)
+    return SVector{3, T}(trunc(number), mm, ss - 3600 * dd - 60 * mm)
 end
 
 """

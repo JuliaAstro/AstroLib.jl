@@ -15,7 +15,7 @@ end
 
 # Test sec2rad
 @testset "sec2rad" begin
-    @test @inferred(sec2rad(3600*30)) ≈ pi/6
-    @test @inferred(1/sec2rad(1)) ≈ 206264.80624709636
+    @test @inferred(sec2rad(3600 * 30)) ≈ pi / 6
+    @test @inferred(1 / sec2rad(1)) ≈ 206264.80624709636
     @test @inferred(rad2sec(sec2rad(56.78))) ≈ 56.78
 end

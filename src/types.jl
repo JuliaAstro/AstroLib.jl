@@ -22,11 +22,12 @@ struct Observatory
 
     # Define constructor that automatically converts longitude and latitude with
     # "ten", for convenience.
-    Observatory(name, lat, long, alt, tz) =
-        new(String(name),
-            Float64(ten(lat)), Float64(ten(long)),
-            Float64(float(alt)),
-            Float64(ten(tz)))
+    Observatory(name, lat, long, alt, tz) = new(
+        String(name),
+        Float64(ten(lat)), Float64(ten(long)),
+        Float64(float(alt)),
+        Float64(ten(tz))
+    )
 end
 
 # New type representation
@@ -36,8 +37,9 @@ function show(io::IO, obs::Observatory)
     println(io, "longitude:   ", obs.longitude, "°E")
     println(io, "altitude:    ", obs.altitude, " m")
     tzdec, tzint = modf(obs.tz)
-    tzstr = tzdec == 0 ? "" : @sprintf(":%d", abs(tzdec*60))
-    print(io,   "time zone:   ", @sprintf("UTC%+d", tzint), tzstr)
+    tzstr = tzdec == 0 ? "" : @sprintf(":%d", abs(tzdec * 60))
+    print(io, "time zone:   ", @sprintf("UTC%+d", tzint), tzstr)
+    return
 end
 
 ##### Planet
@@ -97,6 +99,7 @@ function show(io::IO, pl::Planet)
     println(io, "longitude of ascending node: ", pl.asc_long, " °")
     println(io, "longitude of perihelion:     ", pl.per_long, " °")
     print(io,   "mean longitude:              ", pl.mean_long, " °")
+    return
 end
 
 export Observatory, Planet

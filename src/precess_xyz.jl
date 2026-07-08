@@ -1,16 +1,16 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function precess_xyz(x::T, y::T, z::T, equinox1::T, equinox2::T) where {T<:AbstractFloat}
-    ra  = atan(y, x)
+function precess_xyz(x::T, y::T, z::T, equinox1::T, equinox2::T) where {T <: AbstractFloat}
+    ra = atan(y, x)
     del = norm((x, y, z)) #  Magnitude of distance to Sun
-    dec = asin(z/del)
+    dec = asin(z / del)
     # precess the ra and dec
-    ra, dec = precess(ra, dec, equinox1, equinox2, radians=true)
+    ra, dec = precess(ra, dec, equinox1, equinox2, radians = true)
     # convert back to x, y, z
     zunit, cos_dec = sincos(dec)
     yunit, xunit = cos_dec .* sincos(ra)
-    return xunit*del, yunit*del, zunit*del
+    return xunit * del, yunit * del, zunit * del
 end
 
 """
@@ -53,17 +53,17 @@ ascension and declination, precessed in the normal way, then changed back to
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-precess_xyz(x::Real, y::Real, z::Real,
-            equinox1::Real, equinox2::Real) =
-                precess_xyz(promote(float(x), float(y), float(z),
-                                    float(equinox1), float(equinox2))...)
+precess_xyz(x::Real, y::Real, z::Real, equinox1::Real, equinox2::Real) = precess_xyz(
+    promote(float(x), float(y), float(z), float(equinox1), float(equinox2))...
+)
 
 precess_xyz(xyz::Tuple{Real, Real, Real}, equinox1::Real, equinox2::Real) =
     precess_xyz(xyz..., equinox1, equinox2)
 
-function precess_xyz(x::AbstractArray{X}, y::AbstractArray{<:Real},
-                     z::AbstractArray{<:Real}, equinox1::Real,
-                     equinox2::Real) where {X<:Real}
+function precess_xyz(
+        x::AbstractArray{X}, y::AbstractArray{<:Real}, z::AbstractArray{<:Real},
+        equinox1::Real, equinox2::Real
+    ) where {X <: Real}
     if !(length(x) == length(y) == length(z))
         throw(DimensionMismatch("x, y, z arrays should be of the same length"))
     end
@@ -72,8 +72,9 @@ function precess_xyz(x::AbstractArray{X}, y::AbstractArray{<:Real},
     y_out = similar(x, typex)
     z_out = similar(x, typex)
     for i in eachindex(x)
-        x_out[i], y_out[i], z_out[i] = precess_xyz(x[i], y[i], z[i],
-                                                   equinox1, equinox2)
+        x_out[i], y_out[i], z_out[i] = precess_xyz(
+            x[i], y[i], z[i], equinox1, equinox2
+        )
     end
     return x_out, y_out, z_out
 end

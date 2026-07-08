@@ -1,13 +1,13 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _xyz(jd::T, equinox::T) where {T<:AbstractFloat}
+function _xyz(jd::T, equinox::T) where {T <: AbstractFloat}
     t = (jd - 15020) / JULIANCENTURY # Reduced Julian century from 1900
 
     # NOTE: longitude arguments below are given in *equinox* of date.  Precess
     # these to equinox 1950 to give everything an even footing.  Compute
     # argument of precession from equinox of date back to 1950
-    pp = (1.396041 + 0.000308*(t + 0.5))*(t-0.499998)
+    pp = (1.396041 + 0.000308 * (t + 0.5)) * (t - 0.499998)
     # Compute mean solar longitude, precessed back to 1950
     el = @evalpoly t (279.696678 - pp) 36000.76892 0.000303
 
@@ -31,69 +31,69 @@ function _xyz(jd::T, equinox::T) where {T<:AbstractFloat}
 
     # Convert degrees to radians for trig functions
     el = deg2rad(el)
-    g  = deg2rad(g)
-    j  = deg2rad(j)
-    c  = deg2rad(c)
-    v  = deg2rad(v)
-    n  = deg2rad(n)
-    m  = deg2rad(m)
+    g = deg2rad(g)
+    j = deg2rad(j)
+    c = deg2rad(c)
+    v = deg2rad(v)
+    n = deg2rad(n)
+    m = deg2rad(m)
 
     # Calculate x, y, z using trigonometric series
-    sin1,  cos1  = sincos(el)
-    sin2,  cos2  = sincos(g - el)
-    sin3,  cos3  = sincos(g + el)
-    sin4,  cos4  = sincos(g + g + el)
-    sin5,  cos5  = sincos(g + g - el)
-    sin6,  cos6  = sincos(g - el - j)
-    sin7,  cos7  = sincos(2 * g + el - 2 * v)
-    sin8,  cos8  = sincos(c)
-    sin9,  cos9  = sincos(c - 2 * el)
+    sin1, cos1 = sincos(el)
+    sin2, cos2 = sincos(g - el)
+    sin3, cos3 = sincos(g + el)
+    sin4, cos4 = sincos(g + g + el)
+    sin5, cos5 = sincos(g + g - el)
+    sin6, cos6 = sincos(g - el - j)
+    sin7, cos7 = sincos(2 * g + el - 2 * v)
+    sin8, cos8 = sincos(c)
+    sin9, cos9 = sincos(c - 2 * el)
     sin10, cos10 = sincos(4 * g + el - 8 * m + 3 * j)
     sin11, cos11 = sincos(4 * g - el - 8 * m + 3 * j)
     sin12, cos12 = sincos(g + el - v)
     sin13, cos13 = sincos(2 * g - el - 2 * j)
 
-    x = 0.999860 * cos1     -
-        0.025127 * cos2     +
-        0.008374 * cos3     +
-        0.000105 * cos4     +
+    x = 0.99986 * cos1 -
+        0.025127 * cos2 +
+        0.008374 * cos3 +
+        0.000105 * cos4 +
         0.000063 * t * cos2 +
-        0.000035 * cos5     -
-        0.000026 * sin6     -
+        0.000035 * cos5 -
+        0.000026 * sin6 -
         0.000021 * t * cos3 +
-        0.000018 * sin7     +
-        0.000017 * cos8     -
-        0.000014 * cos9     +
-        0.000012 * cos10    -
-        0.000012 * cos11    -
-        0.000012 * cos12    +
-        0.000011 * cos7     +
+        0.000018 * sin7 +
+        0.000017 * cos8 -
+        0.000014 * cos9 +
+        0.000012 * cos10 -
+        0.000012 * cos11 -
+        0.000012 * cos12 +
+        0.000011 * cos7 +
         0.000011 * cos13
 
-    y = 0.917308 * sin1     +
-        0.023053 * sin2     +
-        0.007683 * sin3     +
-        0.000097 * sin4     -
+    y = 0.917308 * sin1 +
+        0.023053 * sin2 +
+        0.007683 * sin3 +
+        0.000097 * sin4 -
         0.000057 * t * sin2 -
-        0.000032 * sin5     -
-        0.000024 * cos6     -
+        0.000032 * sin5 -
+        0.000024 * cos6 -
         0.000019 * t * sin3 -
-        0.000017 * cos7     +
-        0.000016 * sin8     +
-        0.000013 * sin9     +
-        0.000011 * sin10    +
-        0.000011 * sin11    -
-        0.000011 * sin12    +
-        0.000010 * sin7     -
-        0.000010 * sin13
+        0.000017 * cos7 +
+        0.000016 * sin8 +
+        0.000013 * sin9 +
+        0.000011 * sin10 +
+        0.000011 * sin11 -
+        0.000011 * sin12 +
+        0.00001 * sin7 -
+        0.00001 * sin13
 
-    z = 0.397825 * sin1     +
-        0.009998 * sin2     +
-        0.003332 * sin3     +
-        0.000042 * sin4     -
+    z = 0.397825 * sin1 +
+        0.009998 * sin2 +
+        0.003332 * sin3 +
+        0.000042 * sin4 -
         0.000025 * t * sin2 -
-        0.000014 * sin5     -
-        0.000010 * cos6
+        0.000014 * sin5 -
+        0.00001 * cos6
 
     # Precess to new equator?  Avoid useless calculations.
     if isfinite(equinox) && equinox != 1950
@@ -101,26 +101,26 @@ function _xyz(jd::T, equinox::T) where {T<:AbstractFloat}
     end
 
     # Velocities
-    xvel = -0.017200 * sin(el)   -
-        0.000288*sin(g + el)     -
-        0.000005*sin(2.0*g + el) -
-        0.000004*sin(c)          +
-        0.000003*sin(c - 2.0*el) +
-        0.000001*t*sin(g + el)   -
-        0.000001*sin(2.0*g - el)
+    xvel = -0.0172 * sin(el) -
+        0.000288 * sin(g + el) -
+        0.000005 * sin(2.0 * g + el) -
+        0.000004 * sin(c) +
+        0.000003 * sin(c - 2.0 * el) +
+        0.000001 * t * sin(g + el) -
+        0.000001 * sin(2.0 * g - el)
 
-    yvel = 0.015780*cos(el)       +
-        0.000264*cos(g + el)      +
-        0.000005*cos(2.0*g + el)  +
-        0.000004*cos(c)           +
-        0.000003*cos(c - 2.0*el)  -
-        0.000001*t*cos(g + el)
+    yvel = 0.01578 * cos(el) +
+        0.000264 * cos(g + el) +
+        0.000005 * cos(2.0 * g + el) +
+        0.000004 * cos(c) +
+        0.000003 * cos(c - 2.0 * el) -
+        0.000001 * t * cos(g + el)
 
-    zvel = 0.006843*cos(el)      +
-        0.000115*cos(g  + el)    +
-        0.000002*cos(2.0*g + el) +
-        0.000002*cos(c)          +
-        0.000001*cos(c - 2.0*el)
+    zvel = 0.006843 * cos(el) +
+        0.000115 * cos(g + el) +
+        0.000002 * cos(2.0 * g + el) +
+        0.000002 * cos(c) +
+        0.000001 * cos(c - 2.0 * el)
 
     # Precess to new equator?  Avoid useless calculations.
     if isfinite(equinox) && equinox != 1950
@@ -207,17 +207,17 @@ abs(err)
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-xyz(jd::Real, equinox::Real=NaN) = _xyz(promote(float(jd), float(equinox))...)
+xyz(jd::Real, equinox::Real = NaN) = _xyz(promote(float(jd), float(equinox))...)
 
 # Can't use @vectorize_1arg because of the optional keyword.
-function xyz(jd::AbstractArray{J}, equinox::Real=NaN) where {J<:Real}
+function xyz(jd::AbstractArray{J}, equinox::Real = NaN) where {J <: Real}
     typej = float(J)
-    x     = similar(jd, typej)
-    y     = similar(jd, typej)
-    z     = similar(jd, typej)
-    xvel  = similar(jd, typej)
-    yvel  = similar(jd, typej)
-    zvel  = similar(jd, typej)
+    x = similar(jd, typej)
+    y = similar(jd, typej)
+    z = similar(jd, typej)
+    xvel = similar(jd, typej)
+    yvel = similar(jd, typej)
+    zvel = similar(jd, typej)
     for i in eachindex(jd)
         x[i], y[i], z[i], xvel[i], yvel[i], zvel[i] = xyz(jd[i], equinox)
     end

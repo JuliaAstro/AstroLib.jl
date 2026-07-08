@@ -1,15 +1,15 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function geo2eci(lat::T, long::T, alt::T, jd::T) where {T<:AbstractFloat}
-    Re    = planets["earth"].eqradius / 1000
+function geo2eci(lat::T, long::T, alt::T, jd::T) where {T <: AbstractFloat}
+    Re = planets["earth"].eqradius / 1000
     sin_lat, cos_lat = sincos(deg2rad(lat))
-    long  = deg2rad(long)
-    gst   = ct2lst(zero(T), jd)
-    sid_angle = gst*pi/12 # Sidereal angle.
+    long = deg2rad(long)
+    gst = ct2lst(zero(T), jd)
+    sid_angle = gst * pi / 12 # Sidereal angle.
     theta = long + sid_angle # Azimuth
     altRe = alt + Re
-    r     = altRe * cos_lat
+    r = altRe * cos_lat
     sin_theta, cos_theta = sincos(theta)
     return r * cos_theta, r * sin_theta, altRe * sin_lat
 end
@@ -75,12 +75,17 @@ geo2eci(lat::Real, long::Real, alt::Real, jd::Real) =
 geo2eci(lla::Tuple{Real, Real, Real}, jd::Real) =
     geo2eci(lla..., jd)
 
-function geo2eci(lat::AbstractArray{LA}, long::AbstractArray{<:Real},
-                 alt::AbstractArray{<:Real},
-                 jd::AbstractArray{<:Real}) where {LA<:Real}
+function geo2eci(
+        lat::AbstractArray{LA}, long::AbstractArray{<:Real},
+        alt::AbstractArray{<:Real},
+        jd::AbstractArray{<:Real}
+    ) where {LA <: Real}
     if !(length(lat) == length(long) == length(alt) == length(jd))
-        throw(DimensionMismatch(
-            "lat, long, alt, and jd arrays must have the same length"))
+        throw(
+            DimensionMismatch(
+                "lat, long, alt, and jd arrays must have the same length"
+            )
+        )
     end
     typela = float(LA)
     x = similar(lat, typela)

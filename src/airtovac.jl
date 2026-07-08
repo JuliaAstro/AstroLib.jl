@@ -2,19 +2,18 @@
 # Copyright (C) 2016 Mosè Giordano.
 
 function airtovac(wave_air::AbstractFloat)
-    if wave_air >= 2000
-        wave_vac = wave_air
-        for iter= 1:2
-            sigma2 = (1e4/wave_vac)^2 # Convert to wavenumber squared
-            # Computer conversion factor.
-            fact = 1 + 5.792105e-2/(238.0185 - sigma2) +
-                1.67917e-3/(57.362 - sigma2)
-            wave_vac = wave_air*fact # Convert Wavelength
-        end
-        return wave_vac
-    else
+    if wave_air < 2000
         return wave_air
     end
+    wave_vac = wave_air
+    for iter in 1:2
+        sigma2 = (1.0e4 / wave_vac)^2 # Convert to wavenumber squared
+        # Computer conversion factor.
+        fact = 1 + 5.792105e-2 / (238.0185 - sigma2) +
+            1.67917e-3 / (57.362 - sigma2)
+        wave_vac = wave_air * fact # Convert Wavelength
+    end
+    return wave_vac
 end
 
 """

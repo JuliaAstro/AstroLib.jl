@@ -1,6 +1,6 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function _co_nutate(jd::T, ra::T, dec::T) where {T<:AbstractFloat}
+function _co_nutate(jd::T, ra::T, dec::T) where {T <: AbstractFloat}
     d_psi, d_eps = nutate(jd)
     eps = mean_obliquity(jd) + sec2rad(d_eps)
     se, ce = sincos(eps)
@@ -15,7 +15,7 @@ function _co_nutate(jd::T, ra::T, dec::T) where {T<:AbstractFloat}
     xyproj = hypot(x2, y2)
     r = hypot(xyproj, z2)
     ra2 = atan(y2, x2)
-    dec2 = asin(z2/r)
+    dec2 = asin(z2 / r)
     ra2 = rad2deg(ra2)
 
     if ra2 < 0
@@ -85,19 +85,21 @@ This function calls [`mean_obliquity`](@ref) and [`nutate`](@ref).
 co_nutate(jd::Real, ra::Real, dec::Real) =
     _co_nutate(promote(float(jd), float(ra), float(dec))...)
 
-function co_nutate(jd::AbstractVector{P}, ra::AbstractVector{<:Real},
-                   dec::AbstractVector{<:Real}) where {P<:Real}
+function co_nutate(
+        jd::AbstractVector{P}, ra::AbstractVector{<:Real},
+        dec::AbstractVector{<:Real}
+    ) where {P <: Real}
     if !(length(jd) == length(ra) == length(dec))
         throw(DimensionMismatch("jd, ra and dec vectors should be of the same length"))
     end
     typejd = float(P)
-    ra_out  = similar(jd,  typejd)
+    ra_out = similar(jd, typejd)
     dec_out = similar(dec, typejd)
     eps_out = similar(dec, typejd)
     d_psi_out = similar(dec, typejd)
     d_eps_out = similar(dec, typejd)
     for i in eachindex(jd)
-        ra_out[i], dec_out[i],eps_out[i], d_psi_out[i], d_eps_out[i]  =
+        ra_out[i], dec_out[i], eps_out[i], d_psi_out[i], d_eps_out[i] =
             co_nutate(jd[i], ra[i], dec[i])
     end
     return ra_out, dec_out, eps_out, d_psi_out, d_eps_out

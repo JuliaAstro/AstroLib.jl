@@ -1,19 +1,20 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _sphdist(long1::T, lat1::T, long2::T, lat2::T,
-                  degrees::Bool) where {T<:AbstractFloat}
+function _sphdist(
+        long1::T, lat1::T, long2::T, lat2::T, degrees::Bool
+    ) where {T <: AbstractFloat}
     # Convert both points to rectangular coordinates.
-    rxy, z1 = polrec(1,   lat1,  degrees=degrees)
-    x1, y1  = polrec(rxy, long1, degrees=degrees)
-    rxy, z2 = polrec(1,   lat2,  degrees=degrees)
-    x2, y2  = polrec(rxy, long2, degrees=degrees)
+    rxy, z1 = polrec(1, lat1; degrees)
+    x1, y1 = polrec(rxy, long1; degrees)
+    rxy, z2 = polrec(1, lat2; degrees)
+    x2, y2 = polrec(rxy, long2; degrees)
     # Compute vector dot product for both points.
-    cs = x1*x2 + y1*y2 + z1*z2
+    cs = x1 * x2 + y1 * y2 + z1 * z2
     # Compute the vector cross product for both points.
-    xc = y1*z2 - z1*y2
-    yc = z1*x2 - x1*z2
-    zc = x1*y2 - y1*x2
+    xc = y1 * z2 - z1 * y2
+    yc = z1 * x2 - x1 * z2
+    zc = x1 * y2 - y1 * x2
     sn = norm((xc, yc, zc))
     # Convert to polar coordinates.
     radius, angle = recpol(cs, sn)
@@ -58,7 +59,9 @@ julia> sphdist(120, -43, 175, +22, degrees=true)
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-sphdist(long1::Real, lat1::Real,
-        long2::Real, lat2::Real; degrees::Bool=false) =
-            _sphdist(promote(float(long1), float(lat1),
-                             float(long2), float(lat2))... , degrees)
+sphdist(
+    long1::Real, lat1::Real,
+    long2::Real, lat2::Real; degrees::Bool = false
+) = _sphdist(
+    promote(float(long1), float(lat1), float(long2), float(lat2))..., degrees
+)

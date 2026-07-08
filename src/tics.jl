@@ -1,14 +1,10 @@
-function tics(radec_min::T, radec_max::T, numx::T, ticsize::T, ra::Bool) where {T<:AbstractFloat}
+function tics(radec_min::T, radec_max::T, numx::T, ticsize::T, ra::Bool) where {T <: AbstractFloat}
 
-    numtics = numx/ticsize
-    if ra
-        mul = T(4)
-    else
-        mul = T(60)
-    end
-    mins = abs(radec_min - radec_max)*mul
-    rapix = (numx - 1)/mins
-    incr = mins/numtics
+    numtics = numx / ticsize
+    mul = ra ? T(4) : T(60)
+    mins = abs(radec_min - radec_max) * mul
+    rapix = (numx - 1) / mins
+    incr = mins / numtics
 
     if incr >= 120
         incr = T(480)
@@ -26,32 +22,33 @@ function tics(radec_min::T, radec_max::T, numx::T, ticsize::T, ra::Bool) where {
         incr = T(5)
     elseif incr >= 1
         incr = T(2)
-    elseif incr >= 1//2
+    elseif incr >= 1 // 2
         incr = T(1)
-    elseif incr >= 1//4
-        incr = T(1//2)
-    elseif incr >= 10//60
-        incr = T(1//4)
-    elseif incr >= 5//60
-        incr = T(10//60)
-    elseif incr >= 2//60
-        incr = T(5//60)
-    elseif incr >= 1//60
-        incr = T(2//60)
-    elseif incr >= 5//600
-        incr = T(1//60)
-    elseif incr >= 2//600
-        incr = T(5//600)
-    elseif incr >= 1//600
-        incr = T(2//600)
-    elseif incr >= 5//6000
-        incr = T(1//600)
-    elseif incr >= 2//6000
-        incr = T(5//6000)
-    elseif incr >= 1//6000
-        incr = T(2//6000)
-    else incr >= 0
-        incr = T(1//6000)
+    elseif incr >= 1 // 4
+        incr = T(1 // 2)
+    elseif incr >= 10 // 60
+        incr = T(1 // 4)
+    elseif incr >= 5 // 60
+        incr = T(10 // 60)
+    elseif incr >= 2 // 60
+        incr = T(5 // 60)
+    elseif incr >= 1 // 60
+        incr = T(2 // 60)
+    elseif incr >= 5 // 600
+        incr = T(1 // 60)
+    elseif incr >= 2 // 600
+        incr = T(5 // 600)
+    elseif incr >= 1 // 600
+        incr = T(2 // 600)
+    elseif incr >= 5 // 6000
+        incr = T(1 // 600)
+    elseif incr >= 2 // 6000
+        incr = T(5 // 6000)
+    elseif incr >= 1 // 6000
+        incr = T(2 // 6000)
+    else
+        incr >= 0
+        incr = T(1 // 6000)
     end
 
     ticsize = rapix * incr
@@ -112,7 +109,10 @@ julia> tics(30, 60, 12, 2, true)
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-tics(radec_min::Real, radec_max::Real, numx::Real,
-     ticsize::Real, ra::Bool=false) =
-         tics(promote(float(radec_min), float(radec_max), float(numx),
-                      float(ticsize))..., ra)
+tics(
+    radec_min::Real, radec_max::Real, numx::Real,
+    ticsize::Real, ra::Bool = false
+) = tics(
+    promote(float(radec_min), float(radec_max), float(numx), float(ticsize))...,
+    ra
+)

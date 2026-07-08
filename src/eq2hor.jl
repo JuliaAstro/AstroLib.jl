@@ -1,15 +1,17 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function _eq2hor(ra::T, dec::T, jd::T, lat::T, lon::T, altitude::T,
-                 pressure::T, temperature::T, ws::Bool, B1950::Bool,
-                 precession::Bool, nutate::Bool, aberration::Bool,
-                 refract::Bool) where {T<:AbstractFloat}
+function _eq2hor(
+        ra::T, dec::T, jd::T, lat::T, lon::T, altitude::T,
+        pressure::T, temperature::T, ws::Bool, B1950::Bool,
+        precession::Bool, nutate::Bool, aberration::Bool,
+        refract::Bool
+    ) where {T <: AbstractFloat}
 
     j_now = (jd - J2000) / JULIANYEAR + 2000
 
     if precession
         if B1950
-            ra, dec = precess(ra, dec, 1950, j_now, FK4=true)
+            ra, dec = precess(ra, dec, 1950, j_now, FK4 = true)
         else
             ra, dec = precess(ra, dec, 2000, j_now)
         end
@@ -23,12 +25,12 @@ function _eq2hor(ra::T, dec::T, jd::T, lat::T, lon::T, altitude::T,
     end
 
     if nutate
-       ra += dra1
-       dec += ddec1
+        ra += dra1
+        dec += ddec1
     end
     last = 15 * ct2lst(lon, jd) + d_psi * cos(eps) / 3600
     ha = mod(last - ra, 360)
-    alt, az = hadec2altaz(ha, dec, lat, ws=ws)
+    alt, az = hadec2altaz(ha, dec, lat; ws)
 
     if refract
         alt = co_refract(alt, altitude, pressure, temperature, to_observe = true)
@@ -36,17 +38,24 @@ function _eq2hor(ra::T, dec::T, jd::T, lat::T, lon::T, altitude::T,
     return alt, az, ha
 end
 
-eq2hor(ra::Real, dec::Real, jd::Real, lat::Real, lon::Real, altitude::Real=0;
-       ws::Bool=false, B1950::Bool=false, precession::Bool=true, nutate::Bool=true,
-       aberration::Bool=true, refract::Bool=true, pressure::Real=NaN,
-       temperature::Real=NaN) =
-           _eq2hor(promote(float(ra), float(dec), float(jd), float(lat), float(lon),
-                           float(altitude), float(temperature), float(pressure))..., ws,
-                   B1950, precession, nutate, aberration, refract)
+eq2hor(
+    ra::Real, dec::Real, jd::Real, lat::Real, lon::Real, altitude::Real = 0;
+    ws::Bool = false, B1950::Bool = false, precession::Bool = true, nutate::Bool = true,
+    aberration::Bool = true, refract::Bool = true, pressure::Real = NaN,
+    temperature::Real = NaN
+) = _eq2hor(
+    promote(
+        float(ra), float(dec), float(jd), float(lat), float(lon),
+        float(altitude), float(temperature), float(pressure)
+    )...,
+    ws, B1950, precession, nutate, aberration, refract
+)
 
 eq2hor(ra::Real, dec::Real, jd::Real, obsname::AbstractString; kwargs...) =
-    eq2hor(ra, dec, jd, observatories[obsname].latitude, observatories[obsname].longitude,
-           observatories[obsname].altitude; kwargs...)
+    eq2hor(
+    ra, dec, jd, observatories[obsname].latitude, observatories[obsname].longitude,
+    observatories[obsname].altitude; kwargs...
+)
 
 """
     eq2hor(ra, dec, jd[, obsname; ws=false, B1950=false, precession=true, nutate=true,

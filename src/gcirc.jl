@@ -1,7 +1,7 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function gcirc(units::Integer, ra1::T, dec1::T, ra2::T, dec2::T) where {T<:AbstractFloat}
+function gcirc(units::Integer, ra1::T, dec1::T, ra2::T, dec2::T) where {T <: AbstractFloat}
     # Convert all quantities to radians.
     if units == 0
         # All radians
@@ -11,8 +11,8 @@ function gcirc(units::Integer, ra1::T, dec1::T, ra2::T, dec2::T) where {T<:Abstr
         φ_2 = dec2
     elseif units == 1
         # Right ascensions are in hours, declinations in degrees.
-        λ_1 = ra1*pi/12.0
-        λ_2 = ra2*pi/12.0
+        λ_1 = ra1 * pi / 12.0
+        λ_2 = ra2 * pi / 12.0
         φ_1 = deg2rad(dec1)
         φ_2 = deg2rad(dec2)
     elseif units == 2
@@ -23,9 +23,12 @@ function gcirc(units::Integer, ra1::T, dec1::T, ra2::T, dec2::T) where {T<:Abstr
         φ_2 = deg2rad(dec2)
     else
         # In any other case throw an error.
-        throw(DomainError(
-            units,
-            "units must be 0 (radians), 1 (hours, degrees) or 2 (degrees)"))
+        throw(
+            DomainError(
+                units,
+                "units must be 0 (radians), 1 (hours, degrees) or 2 (degrees)"
+            )
+        )
     end
     Δφ_2 = (φ_2 - φ_1) * 0.5
     Δλ_2 = (λ_2 - λ_1) * 0.5

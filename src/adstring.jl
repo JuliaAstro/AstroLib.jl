@@ -3,7 +3,7 @@
 
 # Helper function to format seconds part.
 function formatsec(sec::Real, prec::Integer, truncate::Bool)
-    sec = truncate ? trunc(sec, digits=prec) : round(sec, digits=prec)
+    sec = truncate ? trunc(sec, digits = prec) : round(sec, digits = prec)
     # Seconds of right ascension should be always positive (the hours part
     # holds the sign), so we don't need to take the absolute values.
     sec_frac, sec_int = modf(sec)
@@ -12,8 +12,10 @@ function formatsec(sec::Real, prec::Integer, truncate::Bool)
     # Unless precision is 0, format the fractional part with the decimal
     # separator "." followed by seconds rounded to the precision required
     # and right padded with zeros.
-    sec_frac_str = prec == 0 ? "" : rpad(string(round(sec_frac, digits=prec+1)),
-                                         prec+2, "0")[2:end]
+    sec_frac_str = prec == 0 ? "" : rpad(
+            string(round(sec_frac, digits = prec + 1)),
+            prec + 2, "0"
+        )[2:end]
     return sec_string = string(sec_int_str, sec_frac_str)
 end
 
@@ -77,9 +79,11 @@ julia> adstring.([30.4, -15.63], [-1.23, 48.41], precision=1)
  " 22 57 28.80  +48 24 36.0"
 ```
 """
-function adstring(ra::T, dec::T;
-                  precision::Int=0,
-                  truncate::Bool=false) where {T<:AbstractFloat}
+function adstring(
+        ra::T, dec::T;
+        precision::Int = 0,
+        truncate::Bool = false
+    ) where {T <: AbstractFloat}
     # XXX: IDL implementation takes also real values for "precision" and
     # truncates it.  I think it's better to enforce an integer type and cure
     # only negative values.
@@ -91,23 +95,22 @@ function adstring(ra::T, dec::T;
     else
         ra_hr, ra_min, ra_sec, dec_deg, dec_min, dec_sec = radec(ra, dec)
         ra_sec_string = formatsec(ra_sec, precision + 1, truncate)
-        ra_string = @sprintf("%03.2d %02d %s  ", Int(ra_hr),
-                             Int(ra_min), ra_sec_string)
+        ra_string = @sprintf(
+            "%03.2d %02d %s  ", Int(ra_hr), Int(ra_min), ra_sec_string
+        )
     end
     dec_sec_string = formatsec(dec_sec, precision, truncate)
     dec_string = (dec >= 0 ? "+" : "-") * @sprintf("%02.2d %02d %s", Int(abs(dec_deg)), Int(dec_min), dec_sec_string)
     return string(ra_string, dec_string)
 end
 
-adstring(ra::Real, dec::Real;
-         precision::Int=0, truncate::Bool=false) =
-             adstring(promote(float(ra), float(dec))...,
-                      precision=precision, truncate=truncate)
+adstring(ra::Real, dec::Real; precision::Int = 0, truncate::Bool = false) =
+    adstring(promote(float(ra), float(dec))...; precision, truncate)
 
-adstring(radec; precision::Int=0, truncate::Bool=false) =
-    adstring(radec..., precision=precision, truncate=truncate)
+adstring(radec; precision::Int = 0, truncate::Bool = false) =
+    adstring(radec...; precision, truncate)
 
 # When printing only declination, IDL implementation defaults "precision" to 1
 # instead of 0.
-adstring(dec::Real; precision::Int=1, truncate::Bool=false) =
-    adstring(NaN, dec, precision=precision, truncate=truncate)
+adstring(dec::Real; precision::Int = 1, truncate::Bool = false) =
+    adstring(NaN, dec; precision, truncate)

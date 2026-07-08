@@ -1,11 +1,11 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _mag2flux(mag::T, zero_point::T, ABwave::T) where {T<:AbstractFloat}
+function _mag2flux(mag::T, zero_point::T, ABwave::T) where {T <: AbstractFloat}
     if isnan(ABwave)
-        return exp10(-0.4*(mag + zero_point))
+        return exp10(-0.4 * (mag + zero_point))
     else
-        return exp10(-0.4*(mag + 2.406 + 5*log10(ABwave)))
+        return exp10(-0.4 * (mag + 2.406 + 5 * log10(ABwave)))
     end
 end
 
@@ -62,5 +62,5 @@ julia> mag2flux(8.3, ABwave=12)
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-mag2flux(mag::Real, zero_point::Real=21.1; ABwave::Real=NaN) =
-    _mag2flux(promote(float(mag), float(zero_point), float(ABwave))...,)
+mag2flux(mag::Real, zero_point::Real = 21.1; ABwave::Real = NaN) =
+    _mag2flux(promote(float(mag), float(zero_point), float(ABwave))...)

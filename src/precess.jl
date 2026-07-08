@@ -1,19 +1,20 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _precess(ra::T, dec::T, equinox1::T, equinox2::T,
-                  FK4::Bool, radians::Bool) where {T<:AbstractFloat}
+function _precess(
+        ra::T, dec::T, equinox1::T, equinox2::T, FK4::Bool, radians::Bool
+    ) where {T <: AbstractFloat}
     if !radians
         # Convert to radians.
-        ra  = deg2rad(ra)
+        ra = deg2rad(ra)
         dec = deg2rad(dec)
     end
     sin_dec, cos_dec = sincos(dec)
     sin_ra, cos_ra = sincos(ra)
     x = SVector(cos_dec * cos_ra, cos_dec * sin_ra, sin_dec)
-    r = premat(equinox1, equinox2, FK4=FK4)
-    x2 = r*x
-    ra_out  = mod2pi(atan(x2[2], x2[1]))
+    r = premat(equinox1, equinox2; FK4)
+    x2 = r * x
+    ra_out = mod2pi(atan(x2[2], x2[1]))
     dec_out = asin(x2[3])
     if radians
         return ra_out, dec_out
@@ -97,30 +98,34 @@ Accuracy of precession decreases for declination values near 90 degrees.
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-precess(ra::Real, dec::Real, equinox1::Real, equinox2::Real;
-        FK4::Bool=false, radians::Bool=false) =
-            _precess(promote(float(ra), float(dec),
-                             float(equinox1), float(equinox2))...,
-                     FK4, radians)
+precess(
+    ra::Real, dec::Real, equinox1::Real, equinox2::Real;
+    FK4::Bool = false, radians::Bool = false
+) = _precess(
+    promote(float(ra), float(dec), float(equinox1), float(equinox2))...,
+    FK4, radians
+)
 
-precess(radec::Tuple{Real, Real}, equinox1::Real, equinox2::Real;
-        FK4::Bool=false,
-        radians::Bool=false) =
-            precess(radec[1], radec[2], equinox1, equinox2,
-                    FK4=FK4, radians=radians)
+precess(
+    radec::Tuple{Real, Real}, equinox1::Real, equinox2::Real;
+    FK4::Bool = false, radians::Bool = false
+) = precess(radec[1], radec[2], equinox1, equinox2; FK4, radians)
 
-function precess(ra::AbstractArray{R}, dec::AbstractArray{D}, equinox1::Real,
-                 equinox2::Real; FK4::Bool=false,
-                 radians::Bool=false) where {R<:Real, D<:Real}
+function precess(
+        ra::AbstractArray{R}, dec::AbstractArray{D}, equinox1::Real,
+        equinox2::Real; FK4::Bool = false,
+        radians::Bool = false
+    ) where {R <: Real, D <: Real}
     if length(ra) != length(dec)
         throw(DimensionMismatch("ra and dec arrays should be of the same length"))
     end
     typera = float(R)
-    ra_out  = similar(ra,  typera)
+    ra_out = similar(ra, typera)
     dec_out = similar(dec, typera)
     for i in eachindex(ra)
-        ra_out[i], dec_out[i] = precess(ra[i], dec[i], equinox1, equinox2,
-                                        FK4=FK4, radians=radians)
+        ra_out[i], dec_out[i] = precess(
+            ra[i], dec[i], equinox1, equinox2; FK4, radians
+        )
     end
     return ra_out, dec_out
 end

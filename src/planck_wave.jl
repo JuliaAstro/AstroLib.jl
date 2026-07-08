@@ -1,10 +1,10 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function planck_wave(wavelength::T, temperature::T) where {T<:AbstractFloat}
-    c1  = 3.741771790075259e-16 # = 2*pi*h*c*c
-    c2  = 1.43877735382772e-2   # = h*c/k
-    return c1/(wavelength^5*(expm1(c2/wavelength/temperature)))
+function planck_wave(wavelength::T, temperature::T) where {T <: AbstractFloat}
+    c1 = 3.741771790075259e-16 # = 2*pi*h*c*c
+    c2 = 1.43877735382772e-2   # = h*c/k
+    return c1 / (wavelength^5 * (expm1(c2 / wavelength / temperature)))
 end
 
 """

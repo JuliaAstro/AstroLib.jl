@@ -1,10 +1,10 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 # Copyright (C) 2016 Mosè Giordano.
 
-function _eqpole(l::T, b::T, southpole::Bool) where {T<:AbstractFloat}
+function _eqpole(l::T, b::T, southpole::Bool) where {T <: AbstractFloat}
     sgn = southpole ? -1 : 1
-    l = deg2rad(sgn*l)
-    b = deg2rad(sgn*b)
+    l = deg2rad(sgn * l)
+    b = deg2rad(sgn * b)
     r = 18 * sqrt(2 * (1 - sin(b))) * 3.53553391
     return r .* sincos(l)
 end
@@ -56,11 +56,12 @@ julia> eqpole(80, 19)
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-eqpole(l::Real, b::Real; southpole::Bool=false) =
+eqpole(l::Real, b::Real; southpole::Bool = false) =
     _eqpole(promote(float(l), float(b))..., southpole)
 
-function eqpole(l::AbstractArray{L}, b::AbstractArray{<:Real};
-                southpole::Bool=false) where {L<:Real}
+function eqpole(
+        l::AbstractArray{L}, b::AbstractArray{<:Real}; southpole::Bool = false
+    ) where {L <: Real}
     if length(l) != length(b)
         throw(DimensionMismatch("l and b arrays should be of the same length"))
     end
@@ -68,7 +69,7 @@ function eqpole(l::AbstractArray{L}, b::AbstractArray{<:Real};
     x = similar(l, typel)
     y = similar(l, typel)
     for i in eachindex(l)
-        x[i], y[i] = eqpole(l[i], b[i], southpole=southpole)
+        x[i], y[i] = eqpole(l[i], b[i]; southpole)
     end
     return x, y
 end

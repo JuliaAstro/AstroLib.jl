@@ -1,7 +1,9 @@
 # This file is a part of AstroLib.jl. License is MIT "Expat".
 
-function _co_refract(old_alt::T, altitude::T, pressure::T, temperature::T,
-                    epsilon::T, to_observe::Bool) where {T<:AbstractFloat}
+function _co_refract(
+        old_alt::T, altitude::T, pressure::T, temperature::T,
+        epsilon::T, to_observe::Bool
+    ) where {T <: AbstractFloat}
 
     if isnan(temperature)
         if altitude > 11000
@@ -12,7 +14,7 @@ function _co_refract(old_alt::T, altitude::T, pressure::T, temperature::T,
     end
 
     if isnan(pressure)
-        pressure = 1010 * (1 - 6.5/288000 * altitude) ^ 5.255
+        pressure = 1010 * (1 - 6.5 / 288000 * altitude)^5.255
     end
 
     if !to_observe
@@ -119,10 +121,16 @@ Amazingly, they are also accurate for radio frequencies less than ~ 100 GHz.
 
 Code of this function is based on IDL Astronomy User's Library.
 """
-co_refract(old_alt::Real, altitude::Real=0, pressure::Real=NaN, temperature::Real=NaN,
-           epsilon::Real=0.25; to_observe::Bool=false) =
-               _co_refract(promote(float(old_alt), float(altitude), float(pressure),
-                          float(temperature), float(epsilon))..., to_observe)
+co_refract(
+    old_alt::Real, altitude::Real = 0, pressure::Real = NaN, temperature::Real = NaN,
+    epsilon::Real = 0.25; to_observe::Bool = false
+) = _co_refract(
+    promote(
+        float(old_alt), float(altitude), float(pressure),
+        float(temperature), float(epsilon)
+    )...,
+    to_observe
+)
 
 """
     co_refract_forward(alt, pre, temp) -> ref
@@ -150,7 +158,7 @@ Code of this function is based on IDL Astronomy User's Library.
 function co_refract_forward(alt::Real, pre::Real, temp::Real)
 
     if alt < 15
-        ref = 3.569*@evalpoly(alt, 0.1594, 0.0196, 0.00002)/@evalpoly(alt, 1, 0.505, 0.0845)
+        ref = 3.569 * @evalpoly(alt, 0.1594, 0.0196, 0.00002) / @evalpoly(alt, 1, 0.505, 0.0845)
     else
         ref = 0.0166667 / tand((alt + 7.31 / (alt + 4.4)))
     end
