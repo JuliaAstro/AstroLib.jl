@@ -24,8 +24,8 @@ Already Present in Julia
 ------------------------
 
 * `asinh`
-* `cirrange`.  It is equivalent to `mod(x, 360)`, or to `mod2pi(x)` for the `[0,
-  2pi)` range.
+* `cirrange`.  It is equivalent to `mod(x, 360)`,
+  or to `mod2pi(x)` for the `[0, 2pi)` range.
 * `minmax`.  It is called `extrema` in Julia.
 * `permute`.  It is called `randperm` in Julia.
 * `to_hex`.  It is called `hex` in Julia.
@@ -33,23 +33,23 @@ Already Present in Julia
 Present in Other Libraries
 --------------------------
 
-* `aper`, see https://github.com/kbarbary/AperturePhotometry.jl
+* `aper`, see <https://github.com/kbarbary/AperturePhotometry.jl>
 * `cosmo_param`, see `Cosmology` package
-  (https://github.com/JuliaAstro/Cosmology.jl)
+  (<https://github.com/JuliaAstro/Cosmology.jl>)
 * `galage`, see `Cosmology` package
-  (https://github.com/JuliaAstro/Cosmology.jl)
+  (<https://github.com/JuliaAstro/Cosmology.jl>)
 * `glactc_pm`, see `SkyCoords` package
-  (https://github.com/kbarbary/SkyCoords.jl)
-* `glactc`, see `SkyCoords` package (https://github.com/kbarbary/SkyCoords.jl)
+  (<https://github.com/kbarbary/SkyCoords.jl>)
+* `glactc`, see `SkyCoords` package (<https://github.com/kbarbary/SkyCoords.jl>)
 * `jplephinterp`, see `JPLEphemeris.jl` package
-  (https://github.com/helgee/JPLEphemeris.jl)
+  (<https://github.com/helgee/JPLEphemeris.jl>)
 * `jplephread`, see `JPLEphemeris.jl` package
-  (https://github.com/helgee/JPLEphemeris.jl)
+  (<https://github.com/helgee/JPLEphemeris.jl>)
 * `jplephtest`, see `JPLEphemeris.jl` package
-  (https://github.com/helgee/JPLEphemeris.jl)
+  (<https://github.com/helgee/JPLEphemeris.jl>)
 * `lumdist`, see `Cosmology` package
-  (https://github.com/JuliaAstro/Cosmology.jl)
-* `readcol`, use `readdlm`
+  (<https://github.com/JuliaAstro/Cosmology.jl>)
+* `readcol`, use `DelimitedFiles.readdlm`
 
 Missing in AstroLib.jl
 ----------------------
@@ -275,6 +275,8 @@ Missing in AstroLib.jl
 
 ### FITS I/O
 
+Use FITSIO.jl or FITSFiles.jl
+
 * `check_fits`
 * `fits_add_checksum`
 * `fits_ascii_encode`
@@ -328,13 +330,13 @@ Missing in AstroLib.jl
 
 ### Math and Statistics
 
-* `avg`
+* `avg` - Use `Statistics.mean`
 * `cic`
 * `cspline`
 * `factor`
 * `fitexy`
 * `flegendre`
-* `gaussian`
+* `gaussian` - Use `Distributions.Normal`
 * `hermite`
 * `ksone`
 * `kstwo`
@@ -360,11 +362,11 @@ Missing in AstroLib.jl
 * `prob_ks`
 * `prob_kuiper`
 * `qsimp`
-* `qtrap`
+* `qtrap` - Use Trapz.jl
 * `quadterp`
-* `randomchi`
-* `randomdir`
-* `randomgam`
+* `randomchi` - Use Distributions.jl
+* `randomdir` - Use Distributions.jl
+* `randomgam` - Use Distributions.jl
 * `randomp`
 * `randomwish`
 * `safe_correlate`
@@ -377,6 +379,8 @@ Missing in AstroLib.jl
 * `zbrent`
 
 ### Plotting Procedures
+
+Use any of Plots.jl, Makie.jl, or UnicodePlots.jl
 
 * `al_legend`
 * `al_legendtest`
